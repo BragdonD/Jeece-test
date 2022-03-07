@@ -45,7 +45,7 @@ const memberSchema = new Schema(
 
 const member = mongoose.Model( "Member", memberSchema );
 
-export const createMember = ( f, l, e, p, pw, i ) => {
+const createMember = ( f, l, e, p, pw, i ) => {
     return new member({
         firstName: f,
         lastName: l,
@@ -63,3 +63,20 @@ const getMember = ( id ) => {
         }
     )[0]
 }
+
+const updateMember = ( id, d, v) => {
+    return MemberModel.findOneAndUpdate(
+        {
+            _id: id,
+        },
+        {
+            [d]: v,
+        },
+    )[0]
+}
+
+module.exports = {
+    getMember,
+    updateMember,
+    createMember,
+};
