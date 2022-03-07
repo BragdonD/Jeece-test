@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { Model, Schema } from "mongoose";
 import { MemberModel } from "../../../Documents/nodejs/jeece/test/server/src/member.mjs";
 
@@ -43,7 +42,7 @@ const memberSchema = new Schema(
     },
 );
 
-const member = mongoose.Model( "Member", memberSchema );
+const member = Model( "Member", memberSchema );
 
 export const createMember = ( f, l, e, p, pw, i ) => {
     return new member({
@@ -62,4 +61,21 @@ const getMember = ( id ) => {
             _id: id
         }
     )[0]
+}
+
+const updateMemberData = (id, d, v) => {
+    member.findOneAndUpdate(
+        {
+            [d]: v,
+        },
+        {
+            _id: id,
+        },
+    );
+}
+
+module.exports = {
+    createMember,
+    getMember,
+    updateMemberData,
 }
