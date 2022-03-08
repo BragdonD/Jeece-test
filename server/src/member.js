@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { Model, Schema } from "mongoose";
-import { MemberModel } from "../../../Documents/nodejs/jeece/test/server/src/member.mjs";
+const Model = mongoose.model;
+const Schema = mongoose.Schema;
 
 const memberSchema = new Schema(
     {
@@ -31,7 +31,6 @@ const memberSchema = new Schema(
         },
         img : {
             type: String,
-            required: true,
             default: "",
         },
     },
@@ -43,7 +42,7 @@ const memberSchema = new Schema(
     },
 );
 
-const member = mongoose.Model( "Member", memberSchema );
+const member = Model( "Member", memberSchema );
 
 const createMember = ( f, l, e, p, pw, i ) => {
     return new member({
@@ -75,8 +74,8 @@ const updateMember = ( id, d, v) => {
     )[0]
 }
 
-module.exports = {
+export default {
+    createMember,
     getMember,
     updateMember,
-    createMember,
 };
