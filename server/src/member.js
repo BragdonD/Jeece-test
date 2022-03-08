@@ -55,27 +55,36 @@ const createMember = ( f, l, e, p, pw, i ) => {
     });
 }
 
-const getMember = ( id ) => {
-    return MemberModel.find(
+const getMember = async ( id ) => {
+    return await member.find(
         {
             _id: id
         }
-    )[0]
+    ).exec();
+}
+
+const getMemberByPseudo = async ( p ) => {
+    return await member.find(
+        {
+            pseudo: p
+        }
+    ).exec();
 }
 
 const updateMember = ( id, d, v) => {
-    return MemberModel.findOneAndUpdate(
+    member.findOneAndUpdate(
         {
             _id: id,
         },
         {
             [d]: v,
         },
-    )[0]
+    ).exec();
 }
 
 export default {
     createMember,
     getMember,
+    getMemberByPseudo,
     updateMember,
 };

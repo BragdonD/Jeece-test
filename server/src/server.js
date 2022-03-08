@@ -20,23 +20,14 @@ const port = process.env.PORT || 1063;
 app.use(expressParser.use());
 app.use(cookieParser());
 
-mongoose.connect(
-        process.env.URL_MONGODB,
-        {
+mongoose.connect( process.env.URL_MONGODB, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-        }
-    )
-    .then(
-        function(){ 
-            console.log( ( new Date() ) + " connect to a mongodb database") 
-        }
-    )
-    .catch(
-        function( err ) { 
-            console.log(err) 
-        }
-    );
+    }).then( function(){ 
+        console.log( ( new Date() ) + " connect to a mongodb database") 
+    }).catch(function( err ) { 
+        console.log(err) 
+    });
 
 /*
 let wsServer = new WebSocketServer({
@@ -68,18 +59,65 @@ app.post(
      * @param {request} req 
      * @param {response} res 
      */ 
-    function( req, res ) {
-        res.sendFile(
-            path.join(
-                path.dirname( fileURLToPath( import.meta.url ) ),
-                "../app/index.html"
-            )
-        );
+    async function( req, res ) {
+        const auth = req.cookies["AUTH"];
+        if(auth) {
+            try {
+                const payload = jsonwebtoken.verify(auth, process.env.JWT_SECRET);
+                if( member.getMember(payload._id) ) {
+                    res.redirect("/");
+                }
+                else {
+                    res.redirect("/404");
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        else {
+            try {
+                const pseudo = req.query.pseudo;
+                const password = req.query.password;
+                if(pseudo && password) {
+                    const checkMember = (await member.getMemberByPseudo(pseudo).then( x => x ))[0];
+                    const right = await bcrypt.compare(password, checkMember.password).then( x => x );
+                    if(right) {
+                        const token = jsonwebtoken.sign( {
+                            _id: checkMember._id
+                        }, process.env.JWT_SECRET);
+                        res.cookie("AUTH", token, {
+                            httpOnly: true,
+                            sameSite: "strict",
+                        });
+                        res.status(201).redirect("/");
+                    }
+                    else {
+                        res.status(501).send({
+                            msg: "no match for those informations",
+                        });
+                    }
+                }
+                else {
+                    res.status(404).send({
+                        msg: "wrong inputs",
+                    });
+                }
+                
+            } catch (error) {
+                console.log(error);
+            }
+            
+
+        }
     }
 );
 
-app.post(
-    "/register",
+app.post("/register",
+    /**
+     * 
+     * @param {request} req 
+     * @param {response} res 
+     */
     async function( req, res ) {
         try {
             const fName = req.query.fName;
@@ -92,29 +130,27 @@ app.post(
                 const hash = await bcrypt.hash(password, 10).then( x => x );
                 let newMember = member.createMember(fName, lName, email, pseudo, hash, "");
                 newMember.save();
-                const token = await jsonwebtoken.sign(
-                                                {_id: newMember._id},
-                                                process.env.JWT_SECRET,);
-                res.cookie("AUTH", token,   {
-                                                httpOnly: true,
-                                                sameSite: "strict",
-                                            })
+                const token = jsonwebtoken.sign({
+                    _id: newMember._id
+                }, process.env.JWT_SECRET);
+                res.cookie("AUTH", token, {
+                    httpOnly: true,
+                    sameSite: "strict",
+                });
                 res.status(201).redirect("/");
             }
             else {
                 res.status(404).send({
                     msg: "wrong inputs",
-
                 });
             }
         } catch (error) {
             console.log(error);
         }
     }
-)
+);
 
-app.put(
-    "/member",
+app.put("/memberdata",
     /**
      * 
      * @param {request} req 
@@ -125,20 +161,46 @@ app.put(
             res.redirect("/login");
         }
         else {
-            const id = jsonwebtoken.verify(
-                req.cookies["AUTH"],
-                process.env.JWT_SECRET
-            );
-            
-            member.updateMember();
+            const payload = jsonwebtoken.verify( req.cookies["AUTH"], process.env.JWT_SECRET );
+            const id = payload._id;
+            const data = req.query.data;
+            const value = req.query.value;
+
+            if(data && value) {
+                console.log(id);
+                if(data != "email") {
+                    member.updateMember(id, data, value);
+                    res.status(200).send({
+                        msg: "modified",
+                    })
+                }
+                else {
+                    res.status(404).send({
+                        msg: "can't modify email",
+                    });
+                }
+            }
+            else {
+                res.status(404).send({
+                    msg: "wrong inputs",
+                });
+            }
             
         }
     }
-)
+);
 
-app.listen(
-    port,
-    async function() { 
-        console.log( ( new Date() ) + " a server has been created at http://localhost:%d", port );
+app.get("/login", 
+    /**
+     * 
+     * @param {request} req 
+     * @param {response} res 
+     */
+    function( req, res ) {
+        res.sendFile(path.join(path.dirname(fileURLToPath(import.meta.url)), "../public/login/login.html"));
     }
 );
+
+app.listen(port, function() { 
+    console.log( ( new Date() ) + " a server has been created at http://localhost:%d", port );
+});
