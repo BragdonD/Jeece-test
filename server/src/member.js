@@ -44,7 +44,7 @@ const memberSchema = new Schema(
 
 const member = Model( "Member", memberSchema );
 
-export const createMember = ( f, l, e, p, pw, i ) => {
+const createMember = ( f, l, e, p, pw, i ) => {
     return new member({
         firstName: f,
         lastName: l,
@@ -63,19 +63,19 @@ const getMember = ( id ) => {
     )[0]
 }
 
-const updateMemberData = (id, d, v) => {
-    member.findOneAndUpdate(
-        {
-            [d]: v,
-        },
+const updateMember = ( id, d, v) => {
+    return MemberModel.findOneAndUpdate(
         {
             _id: id,
         },
-    );
+        {
+            [d]: v,
+        },
+    )[0]
 }
 
 module.exports = {
-    createMember,
     getMember,
-    updateMemberData,
-}
+    updateMember,
+    createMember,
+};

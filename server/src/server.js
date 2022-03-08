@@ -6,9 +6,10 @@ import expressParser from "express-parser"
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import path from "path";
-
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
+
+import member from "./member.js"
 
 dotenv.config();
 
@@ -84,6 +85,29 @@ app.post(
         }
         else {
             res.status(200);
+        }
+    }
+)
+
+app.put(
+    "/member",
+    /**
+     * 
+     * @param {request} req 
+     * @param {response} res 
+     */
+    function( req, res ) {
+        if( req.cookies["AUTH"] == undefined ) {
+            res.redirect("/login");
+        }
+        else {
+            const id = jsonwebtoken.verify(
+                req.cookies["AUTH"],
+                process.env.JWT_SECRET
+            );
+            
+            member.updateMember();
+            
         }
     }
 )
