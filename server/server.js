@@ -9,7 +9,7 @@ import bcrypt from "bcrypt";
 import path from "path";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
-import member from "./member.js"
+import member from "./src/member.js"
 
 
 dotenv.config();
@@ -65,10 +65,14 @@ app.post(
             try {
                 const payload = jsonwebtoken.verify(auth, process.env.JWT_SECRET);
                 if( member.getMember(payload._id) ) {
-                    res.redirect("/");
+                    res.status(200).code({
+                        code: 200,
+                    });
                 }
                 else {
-                    res.redirect("/404");
+                    res.status(404).send({
+                        code: 404,
+                    });
                 }
             } catch (error) {
                 console.log(error);
@@ -89,17 +93,19 @@ app.post(
                             httpOnly: true,
                             sameSite: "strict",
                         });
-                        res.status(201).redirect("/");
+                        res.status(201).send({
+                            code: 201
+                        });
                     }
                     else {
                         res.status(501).send({
-                            msg: "no match for those informations",
+                            code: 501,
                         });
                     }
                 }
                 else {
                     res.status(404).send({
-                        msg: "wrong inputs",
+                        code: 404,
                     });
                 }
                 
@@ -137,11 +143,13 @@ app.post("/register",
                     httpOnly: true,
                     sameSite: "strict",
                 });
-                res.status(201).redirect("/");
+                res.status(201).send({
+                    code: 201,
+                });
             }
             else {
                 res.status(404).send({
-                    msg: "wrong inputs",
+                    code: 404,
                 });
             }
         } catch (error) {
@@ -158,7 +166,9 @@ app.put("/memberdata",
      */
     function( req, res ) {
         if( req.cookies["AUTH"] == undefined ) {
-            res.redirect("/login");
+            res.status(501).send({
+                code: 501,
+            });
         }
         else {
             const payload = jsonwebtoken.verify( req.cookies["AUTH"], process.env.JWT_SECRET );
@@ -171,33 +181,22 @@ app.put("/memberdata",
                 if(data != "email") {
                     member.updateMember(id, data, value);
                     res.status(200).send({
-                        msg: "modified",
+                        code: 200,
                     })
                 }
                 else {
                     res.status(404).send({
-                        msg: "can't modify email",
+                        code: 404,
                     });
                 }
             }
             else {
                 res.status(404).send({
-                    msg: "wrong inputs",
+                    code: 404
                 });
             }
             
         }
-    }
-);
-
-app.get("/login", 
-    /**
-     * 
-     * @param {request} req 
-     * @param {response} res 
-     */
-    function( req, res ) {
-        res.sendFile(path.join(path.dirname(fileURLToPath(import.meta.url)), "../public/login/login.html"));
     }
 );
 
