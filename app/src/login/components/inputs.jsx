@@ -6,12 +6,11 @@ export const Input = ( { placeholder, type, callback } ) => {
      * @param {InputEvent} e 
      */
     const handleChange = (e) => {
-        console.log(e.target.value);
         callback(e.target.value);
     };
 
     const handleClick = () => {
-        if(type === "submit") {
+        if(type === "submit") { 
             callback(true);
         }
     }
