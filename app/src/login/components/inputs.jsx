@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export const Input = ( { placeholder, type, callback } ) => {
+export const Input = ( { placeholder, type, className, callback } ) => {
     /**
      * 
      * @param {InputEvent} e 
@@ -17,7 +17,7 @@ export const Input = ( { placeholder, type, callback } ) => {
 
     return (
         <div>
-            <input type={type} placeholder={placeholder} onChange={handleChange} onClick={handleClick}></input>
+            <input className={className} type={type} placeholder={placeholder} onChange={handleChange} onClick={handleClick}></input>
         </div>
     )
 }

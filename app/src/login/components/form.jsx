@@ -5,7 +5,7 @@ export const Form = ({ inputs }) => {
     return(
         inputs.map( (elem, i) => {
             return(
-                <Input placeholder={elem.placeholder} type={elem.type} callback={elem.callback} key={i}></Input>
+                <Input placeholder={elem.placeholder} type={elem.type} callback={elem.callback} key={i} className={elem.className}></Input>
             )
         })
     )
