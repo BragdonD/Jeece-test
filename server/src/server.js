@@ -18,19 +18,9 @@ import member from "./member.js"
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 1063;
-
-app.use(function(req, res, next) {
-    console.log('Handling ' + req.method + ' ' + req.url);
-    next();
-});
+const port = 3001;
 
 app.use(cors());
-
-app.use(function(req, res, next) {
-    console.log('After CORS ' + req.method + ' ' + req.url);
-    next();
-});
 /*app.use(helmet());
 app.use(busboy());*/
 app.use(cookieParser());
@@ -76,16 +66,19 @@ app.post(
      * @param {response} res 
      */ 
     async function( req, res ) {
-        console.log("here");
         const auth = req.cookies["AUTH"];
         if(auth) {
             try {
                 const payload = jsonwebtoken.verify(auth, process.env.JWT_SECRET);
                 if( member.getMember(payload._id) ) {
-                    res.redirect("/");
+                    res.status(200).send({
+                        msg: "redirect",
+                    });
                 }
                 else {
-                    res.redirect("/404");
+                    res.status(409).send({
+                        msg: "wrong auth token"
+                    });
                 }
             } catch (error) {
                 console.log(error);
@@ -109,14 +102,14 @@ app.post(
                         res.status(201).redirect("/");
                     }
                     else {
-                        res.status(501).send({
+                        res.status(409).send({
                             msg: "no match for those informations",
                         });
                     }
                 }
                 else {
                     res.header()
-                    res.status(404).send({
+                    res.status(409).send({
                         msg: "wrong inputs",
                     });
                 }

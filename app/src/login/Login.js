@@ -221,24 +221,29 @@ export const LoginForm = () => {
 
     const SubmitForm = async () => {
         try {
-            let url = "http://localhost:3000";
+            let url;
             let param;
 
             if(login) {
-                url += "/login";
+                url = `login?pseudo=${pseudo}&password=${password}`;
             }
             else {
-                url += "/register";
+                url = `register?fName=${prenom}&lName=${nom}pseudo=${pseudo}&email=${email}&password=${password}`;
             }
             console.log(url)
-            const res = await axios({
-                method: "post", 
-                url: url,
+            const res = await fetch(url, {
+                method: "POST", 
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                  },
                 data: {
                     pseudo: pseudo,
                 },
+                withCredentials: true,
             }).then( x => x );
-            console.log(res);
+            const msg = JSON.parse(await res.text().then(x => x)).msg;
+            console.log(msg);
         } catch(error) {
             console.log(error);
         }
