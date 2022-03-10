@@ -7,7 +7,8 @@ import {
   } from "react-router-dom";
 import './index.css';
 import App from './App';
-import { LoginForm } from './login/Login';
+import { LoginForm } from './login/login';
+import { RegisterForm } from './register/register';
 import reportWebVitals from './reportWebVitals';
 
 
@@ -16,6 +17,7 @@ ReactDOM.render(
     <Routes>
       <Route path='/' element={<App />}/>
       <Route path='/login' element={<LoginForm/>}/>
+      <Route path='/register' element={<RegisterForm/>}/>
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

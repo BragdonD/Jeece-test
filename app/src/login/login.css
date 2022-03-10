@@ -1,8 +1,8 @@
 .container {
   width: 100vw;
   height: 100vh;
-  background: -webkit-gradient(linear, left top, right bottom, from(#55237e), to(#1b75be));
-  background: linear-gradient(to bottom right, #55237e 0%, #1b75be 100%);
+  background: -webkit-gradient(linear, left top, right bottom, from(#b18ccf), to(#a1c5e6));
+  background: linear-gradient(to bottom right, #b18ccf 0%, #a1c5e6 100%);
 }
 
 .login-form-wrapper {
@@ -18,7 +18,8 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  min-width: 50%;
+  width: 50%;
+  max-width: 400px;
   padding: 15px 20px;
   border-radius: 10px;
   border: #fff 1px solid;
@@ -71,16 +72,25 @@
   background-color: rgba(150, 35, 35, 0.5);
 }
 
-.login-form-wrapper div input.valid {
+.login-form-wrapper div input.correct {
   background-color: rgba(32, 155, 104, 0.5);
 }
 
 .login-form-wrapper p {
+  margin: 5px 0;
   font-size: 0.9em;
   text-align: center;
 }
 
 .login-form-wrapper p a {
   color: #fff;
+}
+
+.login-form-wrapper p.error {
+  color: #9c2626;
+}
+
+.login-form-wrapper p.unvisible {
+  display: none;
 }
 /*# sourceMappingURL=login.css.map */

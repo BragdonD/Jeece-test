@@ -1,5 +1,5 @@
-$light-background: #1b75be;
-$dark-background: #55237e;
+$light-background: #a1c5e6;
+$dark-background: #b18ccf;
 
 .container {
     width: 100vw;
@@ -16,7 +16,8 @@ $dark-background: #55237e;
     display: flex;
     flex-direction: column;
 
-    min-width: 50%;
+    width: 50%;
+    max-width: 400px;
     padding: 15px 20px;
 
     border-radius: 10px;
@@ -65,18 +66,27 @@ $dark-background: #55237e;
                 background-color: rgba($color: #962323, $alpha: 0.5);
             }
 
-            &.valid {
+            &.correct {
                 background-color: rgba($color: #209b68, $alpha: 0.5);
             }
         }
     }
 
     p {
+        margin: 5px 0;
         font-size: 0.9em;
         text-align: center;
 
         a {
             color: #fff;
+        }
+
+        &.error {
+            color: rgb(156, 38, 38);
+        }
+
+        &.unvisible {
+            display: none;
         }
     }
 }
