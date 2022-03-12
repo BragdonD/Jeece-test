@@ -1,11 +1,11 @@
-.login-container {
+.register-container {
   width: 100vw;
   height: 100vh;
-  background: -webkit-gradient(linear, left top, right bottom, from(#b18ccf), to(#a1c5e6));
-  background: linear-gradient(to bottom right, #b18ccf 0%, #a1c5e6 100%);
+  background: -webkit-gradient(linear, left top, right bottom, from(#c3cf8c), to(#a1e6bb));
+  background: linear-gradient(to bottom right, #c3cf8c 0%, #a1e6bb 100%);
 }
 
-.login-form-wrapper {
+.register-form-wrapper {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -26,12 +26,12 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.login-form-wrapper h1 {
+.register-form-wrapper h1 {
   text-align: center;
   color: #fff;
 }
 
-.login-form-wrapper div {
+.register-form-wrapper div {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -45,7 +45,7 @@
   margin: 10px 0;
 }
 
-.login-form-wrapper div input {
+.register-form-wrapper div input {
   width: 100%;
   height: 30px;
   border-radius: 30px;
@@ -54,43 +54,43 @@
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-.login-form-wrapper div input[type="text"], .login-form-wrapper div input[type="email"], .login-form-wrapper div input[type="password"] {
+.register-form-wrapper div input[type="text"], .register-form-wrapper div input[type="email"], .register-form-wrapper div input[type="password"] {
   text-indent: 2ch;
 }
 
-.login-form-wrapper div input[type="submit"] {
+.register-form-wrapper div input[type="submit"] {
   width: 40%;
   background-color: white;
 }
 
-.login-form-wrapper div input[type="submit"]:hover {
+.register-form-wrapper div input[type="submit"]:hover {
   background-color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
 }
 
-.login-form-wrapper div input.wrong {
+.register-form-wrapper div input.wrong {
   background-color: rgba(150, 35, 35, 0.5);
 }
 
-.login-form-wrapper div input.correct {
+.register-form-wrapper div input.correct {
   background-color: rgba(32, 155, 104, 0.5);
 }
 
-.login-form-wrapper p {
+.register-form-wrapper p {
   margin: 5px 0;
   font-size: 0.9em;
   text-align: center;
 }
 
-.login-form-wrapper p a {
+.register-form-wrapper p a {
   color: #fff;
 }
 
-.login-form-wrapper p.error {
+.register-form-wrapper p.error {
   color: #9c2626;
 }
 
-.login-form-wrapper p.unvisible {
+.register-form-wrapper p.unvisible {
   display: none;
 }
-/*# sourceMappingURL=login.css.map */
+/*# sourceMappingURL=register.css.map */

@@ -6,7 +6,7 @@ import {
     Route,
   } from "react-router-dom";
 import './index.css';
-import App from './App';
+import App from './app/app';
 import { LoginForm } from './login/login';
 import { RegisterForm } from './register/register';
 import reportWebVitals from './reportWebVitals';

@@ -1,6 +1,6 @@
 export const SubmitForm = async (pseudo, password) => {
     try {
-        let url = `login?pseudo=${pseudo}&password=${password}`;
+        let url = `login?pseudo=${encodeURIComponent(pseudo)}&password=${encodeURIComponent(password)}`;
 
         console.log(url)
         const res = await fetch(url, {
@@ -15,15 +15,7 @@ export const SubmitForm = async (pseudo, password) => {
             withCredentials: true,
         }).then( x => x );
 
-        const msg = JSON.parse(await res.text().then(x => x)).msg;
-
-        if(msg === "redirect") {
-            window.location = "/";
-        }
-        else if (msg === "no match") {
-            document.getElementById("error-p").classList.remove("unvisible");
-        }
-        
+        return JSON.parse(await res.text().then(x => x)).msg;        
     } catch(error) {
         console.log(error);
     }

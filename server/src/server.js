@@ -1,13 +1,15 @@
 import express from "express";
 import { response, request } from "express";
 import jsonwebtoken from "jsonwebtoken";
-import WebSocketServer from "websocket/lib/WebSocketServer.js";
+import ws from "websocket";
+const WebSocketServer = ws.server;
+const WSrequest = ws.request;
 import expressParser from "express-parser"
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import cors from "cors";
-import helmet from "helmet"
-import busboy from "busboy"
+import helmet from "helmet";
+import compression from "compression";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import path from "path";
@@ -21,8 +23,8 @@ const app = express();
 const port = 3001;
 
 app.use(cors());
-/*app.use(helmet());
-app.use(busboy());*/
+app.use(helmet());
+app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
@@ -35,29 +37,6 @@ mongoose.connect( process.env.URL_MONGODB, {
         console.log(err) 
     });
 
-/*
-let wsServer = new WebSocketServer({
-    httpServer: app,
-    autoAcceptConnections: false,
-});
-
-
-function originIsAllowed(origin) {
-    origin.headers["AUTH"];
-    
-    return true;
-}
-
-wsServer.on("request", function(request) {
-
-});
-
-function CheckAuthToken(token, callback) {
-    jsonwebtoken.verify(token, process.env.JWT_SECRET, function(err, res) {
-        callback(err, res);
-    });
-}*/
-
 app.post(
     "/login",
     /**
@@ -66,30 +45,13 @@ app.post(
      * @param {response} res 
      */ 
     async function( req, res ) {
-        const auth = req.cookies["AUTH"];
-        if(auth) {
-            try {
-                const payload = jsonwebtoken.verify(auth, process.env.JWT_SECRET);
-                if( member.getMember(payload._id) ) {
-                    res.status(200).send({
-                        msg: "redirect",
-                    });
-                }
-                else {
-                    res.status(409).send({
-                        msg: "wrong auth token"
-                    });
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        else {
-            try {
-                const pseudo = req.query.pseudo;
-                const password = req.query.password;
-                if(pseudo && password) {
-                    const checkMember = (await member.getMemberByPseudo(pseudo).then( x => x ))[0];
+        try {
+            const pseudo = req.query.pseudo;
+            const password = req.query.password;
+
+            if(pseudo && password) {
+                const checkMember = (await member.getMemberByPseudo(pseudo).then( x => x ))[0];
+                if(checkMember !== undefined) {
                     const right = await bcrypt.compare(password, checkMember.password).then( x => x );
                     if(right) {
                         const token = jsonwebtoken.sign( {
@@ -99,26 +61,31 @@ app.post(
                             httpOnly: true,
                             sameSite: "strict",
                         });
-                        res.status(201).redirect("/");
+                        res.status(201).send({
+                            msg: "redirect",
+                        });;
                     }
                     else {
                         res.status(409).send({
-                            msg: "no match for those informations",
+                            msg: "no match",
                         });
                     }
                 }
                 else {
-                    res.header()
                     res.status(409).send({
-                        msg: "wrong inputs",
+                        msg: "no match",
                     });
                 }
-                
-            } catch (error) {
-                console.log(error);
+            }
+            else {
+                res.header()
+                res.status(409).send({
+                    msg: "wrong inputs",
+                });
             }
             
-
+        } catch (error) {
+            console.log(error);
         }
     }
 );
@@ -138,17 +105,28 @@ app.post("/register",
             const email = req.query.email;
 
             if(fName && lName && pseudo && password && email) {
-                const hash = await bcrypt.hash(password, 10).then( x => x );
-                let newMember = member.createMember(fName, lName, email, pseudo, hash, "");
-                newMember.save();
-                const token = jsonwebtoken.sign({
-                    _id: newMember._id
-                }, process.env.JWT_SECRET);
-                res.cookie("AUTH", token, {
-                    httpOnly: true,
-                    sameSite: "strict",
-                });
-                res.status(201).redirect("/");
+                const test_pseudo = await member.getMemberByPseudo(pseudo).then(x => x);
+                if(test_pseudo.length === 0) {
+                    const hash = await bcrypt.hash(password, 10).then( x => x );
+                    let newMember = member.createMember(fName, lName, email, pseudo, hash, "");
+                    newMember.save();
+                    const token = jsonwebtoken.sign({
+                        _id: newMember._id
+                    }, process.env.JWT_SECRET);
+                    res.cookie("AUTH", token, {
+                        httpOnly: true,
+                        sameSite: "strict",
+                    });
+                    res.status(201).send({
+                        msg: "redirect"
+                    });
+                }
+                else {
+                    res.status(501).send({
+                        msg: "already existing"
+                    });
+                }
+                
             }
             else {
                 res.status(404).send({
@@ -168,7 +146,7 @@ app.put(
      * @param {request} req 
      * @param {response} res 
      */
-    function( req, res ) {
+    async function( req, res ) {
         if( req.cookies["AUTH"] == undefined ) {
             res.redirect("/login");
         }
@@ -178,20 +156,99 @@ app.put(
             const data = req.query.data;
             const value = req.query.value;
 
-            if(data && value) {
-                member.updateMember(id, data, value);
-                
+            if((await member.getMember(id).then(x => x)).length !== 0) {
+                if(data && value) {
+                    member.updateMember(id, data, value);
+                }
+                else {
+                    res.status(404).send({
+                        msg: "wrong inputs",
+                    });
+                }
             }
             else {
-                res.status(404).send({
-                    msg: "wrong inputs",
+                res.status(501).send({
+                    msg: "wrong token",
                 });
             }
+
+            
             
         }
     }
 );
 
-app.listen(port, function() { 
+const server = app.listen(port, function() { 
     console.log( ( new Date() ) + " a server has been created at http://localhost:%d", port );
 });
+
+let wsServer = new WebSocketServer({
+    httpServer: server,
+    autoAcceptConnections: false,
+});
+
+/**
+ * 
+ * @param {WSrequest} request 
+ * @returns 
+ */
+async function originIsAllowed(request) {
+    const token = request.cookies.find(obj => {
+        return obj.name === "AUTH"
+    }); 
+    if(token !== undefined) {
+        const payload = jsonwebtoken.verify(token.value, process.env.JWT_SECRET);
+        const id = payload._id;
+
+        if((await member.getMember(id).then(x => x)).length !== 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+wsServer.on("request",
+    /**
+     * 
+     * @param {WSrequest} request 
+     * @returns 
+     */ 
+    async function(request) {
+        try{
+            if (!(await originIsAllowed(request).then(x => x))) {
+                // Make sure we only accept requests from an allowed origin
+                request.reject();
+                console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
+                return;
+            }
+            
+            let connection = request.accept(null, request.origin);
+
+            console.log((new Date()) + ' Connection accepted.');
+
+            connection.on('message', async function(message) {
+                try {
+                    if (message.type === 'utf8') {
+                        console.log('Received Message: ' + message.utf8Data);
+                        const string = message.utf8Data;
+                        const data = JSON.parse(string)
+                        console.log(data);
+                        connection.send(JSON.stringify({
+                            msg: "",
+                        }))
+                    }
+                } 
+                catch (e) {
+                    console.log(e);
+                }
+                
+            });
+
+            connection.on('close', function(reasonCode, description) {
+                console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
+            });
+        }
+        catch (err) {
+            console.log(err);
+        }
+    });

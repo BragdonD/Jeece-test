@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Form } from "./components/form.jsx";
-import { SubmitForm } from "./function.js"
+import { SubmitForm } from "./function.js";
 import "./login.css";
 
 const initialData = [
     {
-        placeholder: "Prénom",
+        placeholder: "Pseudo",
         type: "text",
         className: "",
     },
@@ -23,16 +23,15 @@ const initialData = [
 export const LoginForm = () => {
     const [pseudo, setPseudo] = useState("");
     const [password, setPassword] = useState("");
-    const [submit, setSubmit] = useState(false);  
     const [show_error, setError] = useState(false);
-    const [render, setRender] = useState(false)
+    const [render, setRender] = useState(false);
     const [login_data, setData] = useState(initialData);
 
     /**
      * 
      * @param {Boolean} value 
      */
-     const checkIntegrityLoginForm = (value) => {
+    const checkIntegrityLoginForm = (value) => {
         if(value === true) {
             console.log("here");
             let wrong = 0;
@@ -53,8 +52,15 @@ export const LoginForm = () => {
             setRender(!render);
             if(wrong !== 0) { return; }
             else {
-                console.log("here2");
-                SubmitForm(pseudo, password);
+                SubmitForm(pseudo, password).then(msg => {
+                    if(msg === "redirect") {
+                        window.location = "/";
+                    }
+                    else if (msg === "no match") {
+                        setError(true);
+                    }
+                });
+                
             }
         }
     }
@@ -64,19 +70,21 @@ export const LoginForm = () => {
     login_data[2]["callback"] = checkIntegrityLoginForm;
 
     useEffect(() => {
-        
-        let correct_input = 0;
-        console.log("here");
-        setSubmit(false);
-    }, [submit]);
+        if(show_error) {
+            document.getElementById("error-p").classList.remove("unvisible");
+        }
+        else {
+            document.getElementById("error-p").classList.add("unvisible");
+        }
+    }, [show_error]);
 
     return(
-        <div className="container">
+        <div className="login-container">
             <div className="login-form-wrapper">
                 <h1 id="login-form-title">Login</h1>
                 <Form inputs={login_data}></Form>
                 <p id="error-p" className="error unvisible">Aucun compte trouver avec ces identifiants</p>
-                <p>Pas encore membre <a href="/register">register</a>.</p>
+                <p>Pas encore membre <a href="/register">Créez un compte</a>.</p>
             </div>
         </div>
     )
