@@ -108,7 +108,7 @@ app.post("/register",
                 const test_pseudo = await member.getMemberByPseudo(pseudo).then(x => x);
                 if(test_pseudo.length === 0) {
                     const hash = await bcrypt.hash(password, 10).then( x => x );
-                    let newMember = member.createMember(fName, lName, email, pseudo, hash, "");
+                    let newMember = member.createMember(fName, lName, email, pseudo, hash);
                     newMember.save();
                     const token = jsonwebtoken.sign({
                         _id: newMember._id
@@ -139,8 +139,7 @@ app.post("/register",
     }
 );
 
-app.put(
-    "/member",
+app.put("/member",
     /**
      * 
      * @param {request} req 
@@ -178,6 +177,17 @@ app.put(
     }
 );
 
+app.get("/image/:id", 
+    /**
+     * 
+     * @param {request} req 
+     * @param {response} res 
+     */
+    function (req, res) {
+        res.sendFile(path.join(fileURLToPath(import.meta.url), `../../private/img/${req.params.id}`));
+    }
+);
+
 const server = app.listen(port, function() { 
     console.log( ( new Date() ) + " a server has been created at http://localhost:%d", port );
 });
@@ -201,10 +211,16 @@ async function originIsAllowed(request) {
         const id = payload._id;
 
         if((await member.getMember(id).then(x => x)).length !== 0) {
-            return true;
+            return {
+                res: true,
+                _id: id,
+            }
         }
     }
-    return false;
+    return {
+        res: false,
+        _id: id,
+    }
 }
 
 wsServer.on("request",
@@ -215,7 +231,8 @@ wsServer.on("request",
      */ 
     async function(request) {
         try{
-            if (!(await originIsAllowed(request).then(x => x))) {
+            const resTestOrigin = await originIsAllowed(request).then(x => x);
+            if (!resTestOrigin.res) {
                 // Make sure we only accept requests from an allowed origin
                 request.reject();
                 console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
@@ -225,6 +242,10 @@ wsServer.on("request",
             let connection = request.accept(null, request.origin);
 
             console.log((new Date()) + ' Connection accepted.');
+
+            connection.send(JSON.stringify({
+                userData: (await member.getMember(resTestOrigin._id).then(x => x))[0]
+            }));
 
             connection.on('message', async function(message) {
                 try {

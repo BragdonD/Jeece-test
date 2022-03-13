@@ -31,7 +31,7 @@ const memberSchema = new Schema(
         },
         img : {
             type: String,
-            default: "",
+            default: "basic-pp.png",
         },
     },
     {
@@ -44,14 +44,13 @@ const memberSchema = new Schema(
 
 const member = Model( "Member", memberSchema );
 
-const createMember = ( f, l, e, p, pw, i ) => {
+const createMember = ( f, l, e, p, pw ) => {
     return new member({
         firstName: f,
         lastName: l,
         email: e,
         pseudo: p,
         password: pw,
-        img: i,
     });
 }
 

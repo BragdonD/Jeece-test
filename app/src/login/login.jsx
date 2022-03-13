@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form } from "./components/form.jsx";
+import { Form } from "../components/form.jsx";
 import { SubmitForm } from "./function.js";
 import "./login.css";
 

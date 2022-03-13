@@ -1,5 +1,6 @@
 import React from "react";
 import { Input } from "./inputs.jsx"
+import PropTypes from 'prop-types';
 
 export const Form = ({ inputs }) => {
     return(
@@ -9,4 +10,8 @@ export const Form = ({ inputs }) => {
             )
         })
     )
+}
+
+Form.propTypes = {
+    inputs: PropTypes.array,
 }

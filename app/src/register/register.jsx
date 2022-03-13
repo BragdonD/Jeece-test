@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form } from "./components/form.jsx";
+import { Form } from "../components/form.jsx";
 import { SubmitForm, CheckEmail, CheckPassword } from "./function.js";
 import "./register.css";
 

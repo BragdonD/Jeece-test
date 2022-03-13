@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 
 export const Input = ( { placeholder, type, className, callback } ) => {
     /**
@@ -20,4 +21,11 @@ export const Input = ( { placeholder, type, className, callback } ) => {
             <input className={className} type={type} placeholder={placeholder} onChange={handleChange} onClick={handleClick}></input>
         </div>
     )
+}
+
+Input.propTypes = {
+    placeholder: PropTypes.string,
+    type: PropTypes.string,
+    className: PropTypes.string,
+    callback: PropTypes.func,
 }
