@@ -18,6 +18,7 @@ const initial_data = {
 function App() {
   const [memberData, setMemberData] = useState(initial_data); 
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showPreference, setShowPreference] = useState(false);
 
   useEffect(() => {
 
@@ -44,18 +45,20 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {}, [memberData]);
+
   useEffect(() => {
-    
-  }, [memberData]);
+    setShowUserMenu(false)
+  }, [showPreference])
 
   return (
     <div className="App">
       <div>
         <UserArea imgURL={memberData.img} setUserMenuVisibilty={setShowUserMenu} visibiltyUserMenu={showUserMenu}></UserArea>
       </div>
-      <Preference member_data={memberData}></Preference>
+      <Preference member_data={memberData} display={showPreference} callback={setShowPreference}></Preference>
       <div>
-        <UserMenu visibilty={showUserMenu}></UserMenu>
+        <UserMenu visibilty={showUserMenu} setShowPreference={setShowPreference}></UserMenu>
       </div>
     </div>
   );
