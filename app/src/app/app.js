@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { w3cwebsocket as WebSocketClient} from "websocket";
 import { UserArea } from './component/user-area.jsx';
 import { UserMenu } from "./component/user-menu.jsx";
-import { Preference } from './component/preferences.jsx';
+import { Preference } from './component/preferences/preferences';
 
 import "./app.css";
 

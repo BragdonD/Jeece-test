@@ -1,5 +1,9 @@
 $input-hover: #f1f1f1;
 
+.App {
+    position: relative;
+}
+
 #user-container {
     display: flex;
     flex: row;
