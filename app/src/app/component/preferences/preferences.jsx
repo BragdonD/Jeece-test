@@ -41,6 +41,7 @@ export const Preference = ({ member_data, display, callback }) => {
                     title={dataInputModif.title !== undefined ? dataInputModif.title : "" }
                     placeholder={dataInputModif.placeholder !== undefined ? dataInputModif.placeholder : ""}
                     inputType={dataInputModif.type !== undefined ? dataInputModif.type : ""}
+                    imgSrc={ImgURL}
                 ></DataModifBlock>
             </div>
         </div>
@@ -111,22 +112,49 @@ DisplayBlockImg.propTypes = {
     setDataToModif: PropTypes.func,
 }
 
-const DataModifBlock = ({ inputType, title, placeholder, display, setDisplay, upload, callback }) => {
+const DataModifBlock = ({ inputType, title, placeholder, display, setDisplay, upload, callback, imgSrc }) => {
     const [value, setValue] = useState();
+    const [IMG, setImg ] = useState(imgSrc);
+
+    useEffect(() => {
+        setImg(imgSrc);
+    }, [imgSrc]);
 
     const handleClose = () => {
+        setImg(imgSrc);
         setDisplay(false);
     }
 
     const handleSubmit = () => {
         upload(value)
     }
+
+    /**
+     * 
+     * @param {File} e 
+     */
+    const handleChange = (e) => {
+        setImg(URL.createObjectURL(e.target.files[0]));
+    }
+
+    const imgClick = () => {
+        document.getElementById("new-input-img").click();
+    }
     
     return (
         <div className={display === false ? "unvisible" : "" + " input-modif-container"}>
             <div className="input-modif-wrapper">
                 <h1>{"Modifier " + title}</h1>
-                <input id="input-modif" type={inputType} onChange={(e) => {setValue( inputType === "text" ? e.target.value : e.target.files[0] )}} placeholder={placeholder}></input>
+                {
+                    inputType === "text" ? 
+                        <input id="input-modif" type={inputType} onChange={(e) => {setValue( inputType === "text" ? e.target.value : e.target.files[0] )}} placeholder={placeholder}></input> :
+                        <div className="input-modif-file-container">
+                            <img  src={IMG}/>
+                            <i onClick={imgClick}></i>
+                            <input id="new-input-img" type={"file"} onChange={handleChange}></input>
+                        </div>
+                }
+                
                 <div className="control-panel">
                     <button className="cancel" onClick={handleClose}>Annuler</button>
                     <button className="confirm" onClick={handleSubmit}>Confirmer</button>
@@ -143,5 +171,6 @@ DataModifBlock.propTypes = {
     display : PropTypes.bool,
     setDisplay : PropTypes.func,
     upload : PropTypes.func,
-    callback : PropTypes.func
+    callback : PropTypes.func,
+    imgSrc: PropTypes.string,
 }
