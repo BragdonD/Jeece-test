@@ -10,6 +10,8 @@ export const Preference = ({ member_data, display, callback }) => {
     const [password, setPassword] = useState("");
     const [data, setData] = useState(Object);
     const [ImgURL, setImgURL] = useState("");
+    const [showInputModif, setShowInputModif] = useState(false);
+    const [dataInputModif, setDataInputModif] = useState({});
 
     useEffect(() => {
         setData(member_data)
@@ -20,24 +22,26 @@ export const Preference = ({ member_data, display, callback }) => {
         callback(false);
     }
 
+    const HandleClik = () => {
+
+    }
+
     return(
         <div className="pref-container" style={{display: display ? "" : "none"}}>
             <div className="pref-wrapper">
                 <button className="close-button" onClick={handleClose}>x</button>
                 <div className="pref-input-container">
-                    <DisplayBlockImg url={ImgURL}></DisplayBlockImg>
-                    <DisplayBlockText title="Prénom" data={data.firstName}></DisplayBlockText>
-                    <DisplayBlockText title="Nom" data={data.lastName}></DisplayBlockText>
-                    <DisplayBlockText title="Pseudo" data={data.pseudo}></DisplayBlockText>
-                    <DisplayBlockText title="Password"></DisplayBlockText>
+                    <DisplayBlockImg url={ImgURL} callback={setShowInputModif} setDataToModif={setDataInputModif}></DisplayBlockImg>
+                    <DisplayBlockText title="Prénom" data={data.firstName} callback={setShowInputModif} setDataToModif={setDataInputModif}></DisplayBlockText>
+                    <DisplayBlockText title="Nom" data={data.lastName} callback={setShowInputModif} setDataToModif={setDataInputModif}></DisplayBlockText>
+                    <DisplayBlockText title="Pseudo" data={data.pseudo} callback={setShowInputModif} setDataToModif={setDataInputModif}></DisplayBlockText>
+                    <DisplayBlockText title="Password" callback={setShowInputModif} setDataToModif={setDataInputModif}></DisplayBlockText>
                 </div>
-            </div>
-            <div className="update-input">
-                <input></input>
-                <div>
-                    <button>Annuler</button>
-                    <button>Confirmer</button>
-                </div>
+                <DataModifBlock display={showInputModif} setDisplay={setShowInputModif} 
+                    title={dataInputModif.title !== undefined ? dataInputModif.title : "" }
+                    placeholder={dataInputModif.placeholder !== undefined ? dataInputModif.placeholder : ""}
+                    inputType={dataInputModif.type !== undefined ? dataInputModif.type : ""}
+                ></DataModifBlock>
             </div>
         </div>
     )
@@ -49,9 +53,14 @@ Preference.propTypes = {
     callback: PropTypes.func,
 }
 
-const DisplayBlockText = ({title, data, callback}) => {
+const DisplayBlockText = ({title, data, callback, setDataToModif}) => {
 
     const handleClick = () => {
+        setDataToModif({
+            type: "text",
+            title: title,
+            placeholder: data
+        });
         callback(true);
     }
 
@@ -72,11 +81,17 @@ DisplayBlockText.propTypes = {
     title: PropTypes.string,
     data: PropTypes.string,
     callback: PropTypes.func,
+    setDataToModif: PropTypes.func,
 }
 
-const DisplayBlockImg = ({url, callback}) => {
+const DisplayBlockImg = ({url, callback, setDataToModif}) => {
 
     const handleClick = () => {
+        setDataToModif({
+            type: "file",
+            title: "Photo de profil",
+            placeholder: url
+        });
         callback(true);
     }
 
@@ -93,4 +108,40 @@ const DisplayBlockImg = ({url, callback}) => {
 DisplayBlockImg.propTypes = {
     url: PropTypes.string,
     callback: PropTypes.func,
+    setDataToModif: PropTypes.func,
+}
+
+const DataModifBlock = ({ inputType, title, placeholder, display, setDisplay, upload, callback }) => {
+    const [value, setValue] = useState();
+
+    const handleClose = () => {
+        setDisplay(false);
+    }
+
+    const handleSubmit = () => {
+        upload(value)
+    }
+    
+    return (
+        <div className={display === false ? "unvisible" : "" + " input-modif-container"}>
+            <div className="input-modif-wrapper">
+                <h1>{"Modifier " + title}</h1>
+                <input id="input-modif" type={inputType} onChange={(e) => {setValue( inputType === "text" ? e.target.value : e.target.files[0] )}} placeholder={placeholder}></input>
+                <div className="control-panel">
+                    <button className="cancel" onClick={handleClose}>Annuler</button>
+                    <button className="confirm" onClick={handleSubmit}>Confirmer</button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+DataModifBlock.propTypes = {
+    inputType : PropTypes.string,
+    title: PropTypes.string,
+    placeholder : PropTypes.string,
+    display : PropTypes.bool,
+    setDisplay : PropTypes.func,
+    upload : PropTypes.func,
+    callback : PropTypes.func
 }

@@ -104,4 +104,105 @@
   background-color: #404655;
   cursor: pointer;
 }
+
+.input-modif-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #f1f1f1;
+  border-radius: inherit;
+}
+
+.input-modif-container .input-modif-wrapper {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+.input-modif-container .input-modif-wrapper input {
+  width: 80%;
+  height: 30px;
+  border-radius: 30px;
+  outline: none;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.input-modif-container .input-modif-wrapper input[type="text"], .input-modif-container .input-modif-wrapper input[type="email"], .input-modif-container .input-modif-wrapper input[type="password"] {
+  text-indent: 2ch;
+}
+
+.input-modif-container .input-modif-wrapper input[type="submit"] {
+  width: 40%;
+  background-color: white;
+}
+
+.input-modif-container .input-modif-wrapper input[type="submit"]:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.control-panel {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  padding-right: 100px;
+}
+
+.control-panel button {
+  padding: 11px;
+  margin: 5px;
+  border: none;
+  border-radius: 10px;
+}
+
+.control-panel button.confirm {
+  background-color: #00ff88;
+}
+
+.control-panel button.cancel {
+  background-color: transparent;
+}
+
+.control-panel button:hover {
+  cursor: pointer;
+}
+
+.control-panel button:hover.confirm {
+  background-color: #18da7f;
+}
+
+.control-panel button:hover.cancel {
+  text-decoration: underline;
+}
 /*# sourceMappingURL=preferences.css.map */

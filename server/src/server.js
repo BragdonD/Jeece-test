@@ -219,7 +219,7 @@ async function originIsAllowed(request) {
     }
     return {
         res: false,
-        _id: id,
+        _id: "",
     }
 }
 
