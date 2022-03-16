@@ -40,6 +40,7 @@
                 margin: 15px 0;
                 img {
                     border-radius: 50px; 
+                    object-fit: cover;
                 }
                 .title-bloc {
                     h1 {
@@ -106,6 +107,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: space-around;
+        padding: 15px 30px;
 
         input {
             width: 80%;
@@ -130,13 +132,16 @@
                     cursor: pointer;
                 }
             }
+
+            &.wrong {
+                background-color: rgba($color: rgb(255, 0, 0), $alpha: 0.4);
+            }
         }
     }
 }
 
 .input-modif-file-container {
     i {
-        
         position: absolute;
         top: 50%;
         left: 50%;
@@ -161,11 +166,11 @@
                 transform: translate(-50%, -50%);
                 width: 110px;
                 height: 110px;
+                border-radius: 110px;
                 background-color: rgba($color: #fff, $alpha: 0.4);
                 z-index: 1;
             }
         }
-
         
     }
     img {
@@ -189,7 +194,6 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    padding-right: 100px;
 
     button {
         padding: 11px;

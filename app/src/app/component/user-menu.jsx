@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 
-export const UserMenu = ({visibilty, setShowPreference}) => {
+export const UserMenu = ({visibilty, setShowPreference }) => {
     const handlePrefClick = () => {
         setShowPreference(true);
     }

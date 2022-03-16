@@ -1,5 +1,10 @@
 .App {
   position: relative;
+  min-height: 100vh;
+}
+
+.left-side {
+  max-width: 350px;
 }
 
 #user-container {
@@ -15,7 +20,12 @@
   padding: 15px;
 }
 
-#user-container h1 {
+#user-container .pseudo-user {
+  width: calc(100% - 115px);
+}
+
+#user-container .pseudo-user h1 {
+  text-indent: 1ch;
   font-size: 1.4em;
   margin: 0;
 }
@@ -29,6 +39,8 @@
 
 #user-container div img {
   border-radius: 50px;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 #user-container div svg {
@@ -48,11 +60,14 @@
 .user-menu-container {
   width: 260px;
   padding: 0 10px;
+  background-color: #fff;
   -webkit-box-shadow: 0px 7px 15px 0px #adadad;
           box-shadow: 0px 7px 15px 0px #adadad;
   border-radius: 10px;
   position: absolute;
   left: 160px;
+  top: 60px;
+  z-index: 150;
 }
 
 .user-menu-container ul {

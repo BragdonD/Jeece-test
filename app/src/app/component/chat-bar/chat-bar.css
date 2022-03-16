@@ -1,0 +1,40 @@
+.chats-box-container {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.chats-box-container .chats-box-wrapper {
+  width: 90%;
+}
+
+.chats-box-container .chats-box-wrapper .chat {
+  width: 100%;
+  text-align: left;
+  text-indent: 4ch;
+  border-radius: 15px;
+  padding: 7px;
+  margin: 8px 0;
+}
+
+.chats-box-container .chats-box-wrapper .chat h1 {
+  margin: 0;
+  font-weight: normal;
+}
+
+.chats-box-container .chats-box-wrapper .chat p {
+  margin: 0;
+}
+
+.chats-box-container .chats-box-wrapper .chat:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+/*# sourceMappingURL=chat-bar.css.map */

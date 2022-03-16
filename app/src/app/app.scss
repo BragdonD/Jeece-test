@@ -2,6 +2,11 @@ $input-hover: #f1f1f1;
 
 .App {
     position: relative;
+    min-height: 100vh;
+}
+
+.left-side {
+    max-width: 350px;
 }
 
 #user-container {
@@ -9,10 +14,13 @@ $input-hover: #f1f1f1;
     flex: row;
     align-items: center;
     padding: 15px;
-
-    h1 {
-        font-size: 1.4em;
-        margin: 0;
+    .pseudo-user {
+        width: calc(100% - 115px);
+        h1 {
+            text-indent: 1ch;
+            font-size: 1.4em;
+            margin: 0;
+        }
     }
 
     div {
@@ -21,6 +29,7 @@ $input-hover: #f1f1f1;
 
         img {
             border-radius: 50px;
+            object-fit: cover;
         }
         
         svg {
@@ -42,11 +51,14 @@ $input-hover: #f1f1f1;
 .user-menu-container {
     width: 260px;
     padding: 0 10px;
+    background-color: #fff;
     box-shadow: 0px 7px 15px 0px #adadad;
     border-radius: 10px;
 
     position: absolute;
     left: 160px;
+    top: 60px;
+    z-index: 150;
 
 
     ul {

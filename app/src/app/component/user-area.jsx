@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
  * @param {String} imgURL
  * @returns 
  */
-export const UserArea = ({ imgURL, setUserMenuVisibilty, visibiltyUserMenu }) => {
+export const UserArea = ({ imgURL, Prenom, setUserMenuVisibilty, visibiltyUserMenu, setShowNewMessage}) => {
     const [ImgURL, setImgURL] = useState("");
 
     useEffect(() => {
@@ -17,13 +17,17 @@ export const UserArea = ({ imgURL, setUserMenuVisibilty, visibiltyUserMenu }) =>
         setUserMenuVisibilty(!visibiltyUserMenu);
     }
 
+    const handleShowMessageClick = () => {
+        setShowNewMessage(true);
+    }
+
     return(
         <div id="user-container">
             <div className="img-user-container">
                 <img src={ImgURL} height="35" width="35"></img>
             </div>
-            <div>
-                <h1>Discussions</h1>
+            <div className="pseudo-user">
+                <h1>{Prenom}</h1>
             </div>
             <div onClick={updateUserMenuVisibility}>
                 <svg viewBox="0 0 36 36" height="28" width="28">
@@ -32,7 +36,7 @@ export const UserArea = ({ imgURL, setUserMenuVisibilty, visibiltyUserMenu }) =>
                     </path>
                 </svg>
             </div>
-            <div>
+            <div onClick={handleShowMessageClick}>
                 <svg viewBox="0 0 36 36" height="28" width="28">
                     <path
                         d="M17.305 16.57a1.998 1.998 0 00-.347.467l-1.546 2.87a.5.5 0 00.678.677l2.87-1.545c.171-.093.328-.21.466-.347l8.631-8.631a1.5 1.5 0 10-2.121-2.122l-8.631 8.632z">
@@ -50,4 +54,6 @@ UserArea.propTypes = {
     imgURL: PropTypes.string,
     visibiltyUserMenu: PropTypes.bool,
     setUserMenuVisibilty: PropTypes.func,
+    setShowNewMessage: PropTypes.func,
+    Prenom: PropTypes.string,
 }

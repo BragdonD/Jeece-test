@@ -1,0 +1,35 @@
+.chats-box-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .chats-box-wrapper {
+        width: 90%;
+        .chat {
+            width: 100%;
+            text-align: left;
+            text-indent: 4ch;
+            border-radius: 15px;
+            
+            padding: 7px;
+            margin: 8px 0;
+
+            h1 {
+                margin: 0;
+                font-weight: normal;
+            }
+
+            p {
+                margin: 0;
+            }
+            
+            &:hover {
+                background-color: #f0f0f0;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+    

@@ -9,9 +9,6 @@ export const SubmitForm = async (pseudo, password) => {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
               },
-            data: {
-                pseudo: pseudo,
-            },
             withCredentials: true,
         }).then( x => x );
 

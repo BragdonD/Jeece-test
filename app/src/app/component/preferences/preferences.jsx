@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { updateData, checkValidity } from "./function";
 import PropTypes from 'prop-types';
 import "./preferences.css"
 
@@ -35,7 +36,7 @@ export const Preference = ({ member_data, display, callback }) => {
                     <DisplayBlockText title="Prénom" data={data.firstName} callback={setShowInputModif} setDataToModif={setDataInputModif}></DisplayBlockText>
                     <DisplayBlockText title="Nom" data={data.lastName} callback={setShowInputModif} setDataToModif={setDataInputModif}></DisplayBlockText>
                     <DisplayBlockText title="Pseudo" data={data.pseudo} callback={setShowInputModif} setDataToModif={setDataInputModif}></DisplayBlockText>
-                    <DisplayBlockText title="Password" callback={setShowInputModif} setDataToModif={setDataInputModif}></DisplayBlockText>
+                    <DisplayBlockText title="Mot de passe" callback={setShowInputModif} setDataToModif={setDataInputModif}></DisplayBlockText>
                 </div>
                 <DataModifBlock display={showInputModif} setDisplay={setShowInputModif} 
                     title={dataInputModif.title !== undefined ? dataInputModif.title : "" }
@@ -121,19 +122,53 @@ const DataModifBlock = ({ inputType, title, placeholder, display, setDisplay, up
     }, [imgSrc]);
 
     const handleClose = () => {
+        setValue();
         setImg(imgSrc);
         setDisplay(false);
     }
 
-    const handleSubmit = () => {
-        upload(value)
+    const handleSubmit = async () => {
+        let name = "";
+        switch (title.toLocaleLowerCase()) {
+            case "prénom":
+                name = "firstName";
+                break;
+            case "nom":
+                name = "lastName";
+                break;
+            case "mot de passe":
+                name = "password";
+                break;
+            case "photo de profil":
+                name = "img";
+                break;
+            case "pseudo":
+                name = "pseudo";
+                break;
+            default:
+                break;
+        }
+        if(checkValidity(name, value)) {
+            const res = await updateData(name, value);
+            if(res === "updated") {
+                window.location.reload();
+            }
+            else {
+                
+            }
+        }
+        else {
+            document.getElementById(inputType === "text" ? "input-modif" : "new-input-img").classList.add("wrong");
+        }
+        
     }
 
     /**
      * 
-     * @param {File} e 
+     * @param {Event} e 
      */
     const handleChange = (e) => {
+        setValue(e.target.files[0])
         setImg(URL.createObjectURL(e.target.files[0]));
     }
 
@@ -147,7 +182,7 @@ const DataModifBlock = ({ inputType, title, placeholder, display, setDisplay, up
                 <h1>{"Modifier " + title}</h1>
                 {
                     inputType === "text" ? 
-                        <input id="input-modif" type={inputType} onChange={(e) => {setValue( inputType === "text" ? e.target.value : e.target.files[0] )}} placeholder={placeholder}></input> :
+                        <input id="input-modif" type={inputType} onChange={(e) => {setValue(e.target.value)}} placeholder={placeholder} value={value === undefined ? "" : value}></input> :
                         <div className="input-modif-file-container">
                             <img  src={IMG}/>
                             <i onClick={imgClick}></i>
