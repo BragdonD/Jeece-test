@@ -6,6 +6,10 @@ export const UserMenu = ({visibilty, setShowPreference }) => {
         setShowPreference(true);
     }
 
+    const handleDisconnection = () => {
+        window.location = "/login"
+    }
+
     return (
         <div className={(visibilty === true ? "" : "unvisible") + " user-menu-container"}>
             <ul>
@@ -25,7 +29,7 @@ export const UserMenu = ({visibilty, setShowPreference }) => {
                         <p>Invitation réunions</p>
                     </div>
                 </li>
-                <li className="user-menu-choice">
+                <li className="user-menu-choice" onClick={handleDisconnection}>
                     <div>
                         <svg viewBox="0 0 36 36" height="24" width="24">
                             <path d="M21.498 14.75a1 1 0 001-1V12a4 4 0 00-4-4h-6.5a4 4 0 00-4 4v12a4 4 0 004 4h6.5a4 4 0 004-4v-1.75a1 1 0 00-1-1h-.5a1 1 0 00-1 1V24a1.5 1.5 0 01-1.5 1.5h-6.5a1.5 1.5 0 01-1.5-1.5V12a1.5 1.5 0 011.5-1.5h6.5a1.5 1.5 0 011.5 1.5v1.75a1 1 0 001 1h.5z"></path>

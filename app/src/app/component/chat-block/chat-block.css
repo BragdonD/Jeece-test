@@ -1,0 +1,191 @@
+.chat-block-container {
+  width: calc( 100% - 250px);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.main-conv-wrapper {
+  width: 100%;
+}
+
+.main-conv-wrapper .header-conv {
+  width: 100%;
+  min-height: 50px;
+  border-bottom: 1px solid #cfcfcf;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.main-conv-wrapper .header-conv .title-conv {
+  text-indent: 3ch;
+  max-height: 60px;
+  margin: 0;
+  font-weight: normal;
+  font-size: 1em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.main-conv-wrapper .header-conv .menu-conv {
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 0 10px;
+  background-color: #fff;
+}
+
+.main-conv-wrapper .header-conv .menu-conv div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.main-conv-wrapper .header-conv .menu-conv div svg {
+  border-radius: 50px;
+  padding: 3px;
+}
+
+.main-conv-wrapper .header-conv .menu-conv div:hover svg {
+  cursor: pointer;
+  background-color: #f1f1f1;
+}
+
+.modify-conv-wrapper {
+  width: 500px;
+  border-left: 1px solid #cfcfcf;
+}
+
+.modify-conv-wrapper.unvisible {
+  display: none;
+}
+
+.modify-conv-wrapper .header-modify {
+  height: 70px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.modify-conv-wrapper .header-modify .title-conv {
+  max-width: 30ch;
+  margin: 0;
+  font-size: 1.2em;
+  text-align: center;
+  font-weight: normal;
+}
+
+.menu-modify-container {
+  margin-top: 30px;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.menu-modify-container .wrapper-menu-option {
+  width: 90%;
+}
+
+.menu-modify-container .wrapper-menu-option .menu-option {
+  padding: 10px 0;
+  border-radius: 7px;
+}
+
+.menu-modify-container .wrapper-menu-option .menu-option:hover {
+  cursor: pointer;
+  background-color: #f1f1f1;
+}
+
+.menu-modify-container .wrapper-menu-option .menu-option:active {
+  background-color: #cccccc;
+}
+
+.menu-modify-container .wrapper-menu-option .menu-option h1 {
+  margin: 0;
+  font-size: 1em;
+  font-weight: normal;
+  text-align: left;
+  text-indent: 2ch;
+}
+
+.member-wrapper {
+  margin: auto;
+  width: 90%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  border-radius: 15px;
+  padding: 5px 0;
+}
+
+.member-wrapper:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.member-wrapper .member-image {
+  width: 35px;
+  height: 35px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 35px;
+  margin: 0 10px;
+  margin-right: 10px;
+}
+
+.member-wrapper h1 {
+  margin: 0;
+  font-weight: normal;
+  font-size: 1.2em;
+  line-height: 100%;
+}
+
+.member-wrapper h1.admin {
+  color: #6231e7;
+}
+
+.member-wrapper p {
+  margin: 0;
+  font-size: 0.7em;
+}
+/*# sourceMappingURL=chat-block.css.map */

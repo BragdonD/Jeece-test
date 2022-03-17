@@ -7,6 +7,7 @@ import { Preference } from './component/preferences/preferences';
 
 import "./app.css";
 import { NewConv } from './component/new-conv/new-conv.jsx';
+import { ChatBlock } from './component/chat-block/chat-block.jsx';
 
 const initial_data = {
   firstName: "",
@@ -23,6 +24,7 @@ function App() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showPreference, setShowPreference] = useState(false);
   const [showNewMessage, setShowNewMessage] = useState(false);
+  const [convSelected, setConvSelected] = useState(0);
   const [Ws, setWs] = useState();
 
   useEffect(() => {
@@ -42,25 +44,26 @@ function App() {
       console.log('echo-protocol Client Closed');
     };
     
-    ws.onmessage = function(e) {
+    ws.onmessage = async function(e) {
       if (typeof e.data === 'string') {
           let data = JSON.parse(e.data);
           console.log(data);
           if(data["userData"] !== undefined)
             setMemberData(data.userData);
-          if(data["userChats"] !== undefined) 
-            setChats(data.userChats.reverse());;
+          if(data["userChats"] !== undefined) {
+            setChats(data.userChats.reverse());
+          }
       }
     };
     
     setWs(ws);
   }, []);
 
-  useEffect(() => {}, [memberData]);
-
   useEffect(() => {
     setShowUserMenu(false)
   }, [showPreference])
+
+  useEffect(() => {}, [memberData]);
 
   useEffect(() => {
     if(showNewMessage === true)
@@ -70,13 +73,38 @@ function App() {
   return (
     <div className="App">
       <div className="left-side">
-        <UserArea imgURL={memberData.img} Prenom={memberData.pseudo} setUserMenuVisibilty={setShowUserMenu} visibiltyUserMenu={showUserMenu} setShowNewMessage={setShowNewMessage}></UserArea>
-        <ChatBar chats={chats}></ChatBar>
+        <UserArea 
+          imgURL={memberData.img} 
+          Prenom={memberData.pseudo} 
+          setUserMenuVisibilty={setShowUserMenu} 
+          visibiltyUserMenu={showUserMenu} 
+          setShowNewMessage={setShowNewMessage}
+        ></UserArea>
+        <ChatBar 
+          chats={chats} 
+          selected={convSelected} 
+          setSelected={setConvSelected}
+        ></ChatBar>
       </div>
-      <Preference member_data={memberData} display={showPreference} callback={setShowPreference}></Preference>
-      <NewConv display={showNewMessage} setDisplay={setShowNewMessage} ws={Ws}></NewConv>
-      <UserMenu visibilty={showUserMenu} setShowPreference={setShowPreference}></UserMenu>
-
+      <Preference 
+        member_data={memberData} 
+        display={showPreference} 
+        callback={setShowPreference}
+      ></Preference>
+      <NewConv 
+        display={showNewMessage} 
+        setDisplay={setShowNewMessage} 
+        ws={Ws}
+      ></NewConv>
+      <UserMenu 
+        visibilty={showUserMenu} 
+        setShowPreference={setShowPreference}
+      ></UserMenu>
+      <ChatBlock 
+        conversation={chats !== undefined ? chats[convSelected] : undefined} 
+        ws={Ws}
+        id={memberData._id}
+      ></ChatBlock>
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 import "./chat-bar.css";
 
-export const ChatBar = ({chats, setClick}) => {
+export const ChatBar = ({chats, setSelected, selected}) => {
     const [chatData, setChatData] = useState(chats);
 
     useEffect(() => {
@@ -9,7 +10,7 @@ export const ChatBar = ({chats, setClick}) => {
     }, [chats]);
 
     const handleClick = (nb) => {
-        
+        setSelected(nb);
     }
 
     return (
@@ -18,7 +19,7 @@ export const ChatBar = ({chats, setClick}) => {
                 {
                     chatData === undefined ? "" : chatData.map( (elem, i) => {
                         return (
-                            <div className="chat" key={i} onClick={(e) => handleClick(i)}>
+                            <div id={elem._id} className={`chat${i === selected ? " selected" : ""}`} key={i} onClick={(e) => handleClick(i)}>
                                 <h1>{elem.title}</h1>
                                 <p>{elem.messages[elem.messages.length]}</p>
                             </div>
@@ -28,5 +29,11 @@ export const ChatBar = ({chats, setClick}) => {
             </div>
         </div>
     )
+}
+
+ChatBar.propTypes = {
+    chats: PropTypes.arrayOf(Object),
+    setSelected: PropTypes.func,
+    selected: PropTypes.number,
 }
 

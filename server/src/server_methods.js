@@ -202,3 +202,15 @@ app.get("/image/:id",
         res.sendFile(path.join(fileURLToPath(import.meta.url), `../../private/img/${req.params.id}`));
     }
 );
+
+app.get("/member/image/:id", 
+    /**
+     * 
+     * @param {request} req 
+     * @param {response} res 
+     */
+    async function (req, res) {
+        const temp = (await member.getMember(req.params.id))[0];
+        res.sendFile(path.join(fileURLToPath(import.meta.url), `../../private/img/${temp.img}`));
+    }
+);
