@@ -50,7 +50,7 @@ const chatSchema = new Schema(
     },
 );
 
-const saloon = Model( "Saloon", chatSchema );
+const chat = Model( "Saloon", chatSchema );
 
 const createMemberByPseudo = async (pseudo, role) => {
     const temp = (await member.getMemberByPseudo(pseudo));
@@ -92,23 +92,77 @@ const createChat = async ( t, m ) => {
         i++;
     };
 
-    return new saloon({
+    return new chat({
         title: t,
         members: members
     });
 }
 
 const getChats = async ( id ) => {
-    return await saloon.find(
+    return await chat.find(
         {
-            "member._id": id,
+            "members._id": id,
         }
     ).exec();
+}
+
+const updateChatName = async ( idChat, name ) => {
+    return await chat.findOneAndUpdate(
+        {
+            _id: idChat
+        }, 
+        {
+            title: name
+        }
+    ).exec();
+}
+
+const removeMember = async ( idChat, idMember ) => {
+    return await chat.findOneAndUpdate(
+        {
+            _id: idChat
+        },
+        {
+            $pull: {
+                members: {
+                    _id: idMember,
+                }
+            }
+        },
+        {new: true}
+    ).exec();
+}
+
+const addMember = async ( idChat, pseudo ) => {
+    const check = await chat.findOne(
+        {
+            _id: idChat,
+            "members._id": (await member.getMemberByPseudo(pseudo))[0]._id
+        }
+    ).exec()
+    if(check === null) {
+        const temp = await createMemberByPseudo(pseudo, "");
+        return await chat.findOneAndUpdate(
+            {
+                _id: idChat
+            },
+            {
+                $push: {
+                    members: temp
+                }
+            },
+            {new: true}
+        ).exec();
+    }
+    return undefined;
 }
 
 export default {
     createChat,
     getChats,
     createMemberByPseudo,
-    createMemberByID
+    createMemberByID,
+    updateChatName,
+    removeMember,
+    addMember
 };

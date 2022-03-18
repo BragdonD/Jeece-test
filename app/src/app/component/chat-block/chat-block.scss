@@ -149,6 +149,30 @@
         margin-right: 10px;
     }
 
+    .right-member-part {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+
+        .options-control-member {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            svg {
+                border-radius: 50px;
+                padding: 3px;
+                margin-right: 10px;
+            }
+
+            &:hover svg {
+                cursor: pointer;
+                background-color: #d8d8d8;
+            }
+        }
+    }
+
     h1 {
         margin: 0;
         font-weight: normal;

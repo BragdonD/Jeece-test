@@ -70,9 +70,10 @@ wsServer.on("request",
             connection.on('message', async function(message) {
                 try {
                     if (message.type === 'utf8') {
-                        //console.log('Received Message: ' + message.utf8Data);
                         const string = message.utf8Data;
                         const data = JSON.parse(string)
+                        console.log(data);
+
                         if(data["task"] === "new conv") {
                             const creator = clients.find(obj => {
                                 return obj.ws === connection;
@@ -87,8 +88,73 @@ wsServer.on("request",
                                 if(toUpt.length !== 0) {
                                     for(const it2 of toUpt) {
                                         it2.ws.send(JSON.stringify({
-                                            userChats: (await chat.getChats(toUpt._id))
+                                            newChat: temp
                                         }))
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "change name") {
+                            const temp = await chat.updateChatName(data._id, data.name);
+                            for(const it of temp.members) {
+                                let toUpt = clients.filter(obj => {
+                                    return obj.id === it._id;
+                                });
+                                if(toUpt.length !== 0) {
+                                    for(const it2 of toUpt) {
+                                        it2.ws.send(JSON.stringify({
+                                            updateChat: {
+                                                _id: data._id,
+                                                title: data.name
+                                            }
+                                        }))
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "delete member") {
+                            const temp = await chat.removeMember(data._id, data.person);
+                            for(const it of temp.members) {
+                                let toUpt = clients.filter(obj => {
+                                    return obj.id === it._id;
+                                });
+                                if(toUpt.length !== 0) {
+                                    for(const it2 of toUpt) {
+                                        it2.ws.send(JSON.stringify({
+                                            updateChat: {
+                                                _id: data._id,
+                                                members: temp.members
+                                            }
+                                        }))
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "add member") {
+                            const temp = await chat.addMember(data._id, data.pseudo);
+                            if(temp !== undefined) {
+                                for(const it of temp.members) {
+                                    let toUpt = clients.filter(obj => {
+                                        return obj.id === it._id;
+                                    });
+                                    if(toUpt.length !== 0) {
+                                        const newMemberID = (await member.getMemberByPseudo(data.pseudo))[0]._id;
+                                        console.log(newMemberID);
+                                        for(const it2 of toUpt) {
+                                            if(it2.id === newMemberID) {
+                                                it2.ws.send(JSON.stringify({
+                                                    newChat: temp
+                                                }))
+                                            }
+                                            else {
+                                                it2.ws.send(JSON.stringify({
+                                                    updateChat: {
+                                                        _id: data._id,
+                                                        members: temp.members
+                                                    }
+                                                }))
+                                            }
+                                        }
                                     }
                                 }
                             }

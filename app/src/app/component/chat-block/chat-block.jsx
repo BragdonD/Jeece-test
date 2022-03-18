@@ -3,10 +3,11 @@ import { w3cwebsocket } from "websocket";
 import PropTypes from 'prop-types';
 import "./chat-block.css";
 
-export const ChatBlock = ({conversation, ws, id}) => {
+export const ChatBlock = ({conversation, ws, id, removeConversation}) => {
     const [displayParameter, setDisplayParameter] = useState(true);
     const [displayChangeNameConv, setDisplayChangeNameConv] = useState(false);
     const [displayLeaveConv, setDisplayLeaveConv] = useState(false);
+    const [displayAddMember, setDisplayAddMember] = useState(false);
 
     useEffect(() => {}, [displayParameter])
 
@@ -21,12 +22,13 @@ export const ChatBlock = ({conversation, ws, id}) => {
      * @param {Boolean} value 
      */
     const handleLeaveConv = (value) => {
-        if(value) {
+        if(value === true) {
             ws.send(JSON.stringify({
                 task: "delete member",
                 _id: conversation._id,
                 person: id
             }));
+            removeConversation(true);
         }
     }
 
@@ -34,13 +36,23 @@ export const ChatBlock = ({conversation, ws, id}) => {
      * 
      * @param {String} value 
      */
-     const handleChangeNameConv = (value) => {
+    const handleChangeNameConv = (value) => {
         if(value) {
             ws.send(JSON.stringify({
                 task: "change name",
                 _id: conversation._id,
                 name: value
             }));
+        }
+    }
+
+    const handleAddMember = (obj) => {
+        if(obj.validation === true) {
+            ws.send(JSON.stringify({
+                task: "add member",
+                _id: conversation._id,
+                pseudo: obj.pseudo
+            }))
         }
     }
 
@@ -64,6 +76,7 @@ export const ChatBlock = ({conversation, ws, id}) => {
                 id={id}
                 setDisplayChangeNameConv={setDisplayChangeNameConv}
                 setDisplayLeaveConv={setDisplayLeaveConv}
+                setDisplayAddMember={setDisplayAddMember}
             ></ModifyConvBlock>
             <ChatNameEdit
                 placeholder={conversation !== undefined ? conversation.title : undefined}
@@ -76,6 +89,11 @@ export const ChatBlock = ({conversation, ws, id}) => {
                 setDisplay={setDisplayLeaveConv}
                 callback={handleLeaveConv}
             ></LeaveConv>
+            <AddMember
+                display={displayAddMember}
+                setDisplay={setDisplayAddMember}
+                callback={handleAddMember}
+            ></AddMember>
         </div>
     )
 }
@@ -114,7 +132,7 @@ MainConvBlock.propTypes = {
     setDisplayParameter: PropTypes.func
 }
 
-const ModifyConvBlock = ({conversation, ws, display, id, setDisplayChangeNameConv, setDisplayLeaveConv}) => {
+const ModifyConvBlock = ({conversation, ws, display, id, setDisplayChangeNameConv, setDisplayLeaveConv, setDisplayAddMember}) => {
     const [admin, setAdmin] = useState(false);
     const [displayMembers, setDisplayMembers] = useState(false);
     const [displayParameters, setDisplayParameters] = useState(false);
@@ -145,6 +163,10 @@ const ModifyConvBlock = ({conversation, ws, display, id, setDisplayChangeNameCon
         setDisplayLeaveConv(true);
     }
 
+    const handleAddMember = () => {
+        setDisplayAddMember(true);
+    }
+
     return (
         <div className={`modify-conv-wrapper ${display === true ? "" : " unvisible"}`}>
             <div className="header-modify">
@@ -165,7 +187,7 @@ const ModifyConvBlock = ({conversation, ws, display, id, setDisplayChangeNameCon
                                     </svg>
                                     <h1>Modifier le nom de la discussion</h1>
                                 </div>
-                                <div className="menu-option">
+                                <div className="menu-option" onClick={handleAddMember}>
                                     <svg viewBox="0 0 36 36" height="24" width="24">
                                         <path fillRule="evenodd" clipRule="evenodd" d="M18 9c-.69 0-1.25.56-1.25 1.25v6.25a.25.25 0 01-.25.25h-6.25a1.25 1.25 0 100 2.5h6.25a.25.25 0 01.25.25v6.25a1.25 1.25 0 102.5 0V19.5a.25.25 0 01.25-.25h6.25a1.25 1.25 0 100-2.5H19.5a.25.25 0 01-.25-.25v-6.25C19.25 9.56 18.69 9 18 9z"></path>
                                     </svg>
@@ -193,13 +215,22 @@ const ModifyConvBlock = ({conversation, ws, display, id, setDisplayChangeNameCon
                         return(
                             <div key={i} className="member-wrapper">
                                 <img className="member-image" src={`/member/image/${elem._id}`}/>
-                                <div>
-                                   <h1 className={elem.role}>{elem.pseudo}</h1> 
-                                   <div>
-                                   {
-                                       elem.role !== "admin" ? undefined : <p>Admin</p>
-                                   }
-                                   </div>
+                                <div className="right-member-part">
+                                    <div>
+                                        <h1 className={elem.role}>{elem.pseudo}</h1> 
+                                        <>
+                                        {
+                                            elem.role !== "admin" ? undefined : <p>Admin</p>
+                                        }
+                                        </>
+                                    </div>
+                                    <div className="options-control-member">
+                                        <svg viewBox="0 0 36 36" height="28" width="28">
+                                            <path
+                                                d="M12.5 18A2.25 2.25 0 118 18a2.25 2.25 0 014.5 0zm7.75 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm5.5 2.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z">
+                                            </path>
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
                         )
@@ -254,6 +285,7 @@ const LeaveConv = ({display, setDisplay, callback}) => {
     }
 
     const handleValidation = () => {
+        setDisplay(false);
         callback(true);
     }
 
@@ -262,6 +294,43 @@ const LeaveConv = ({display, setDisplay, callback}) => {
             <div className="chat-edit-wrapper">
                 <h2>Quitter la conversation</h2>
                 <p>Vous vous appretez à quitter la conversation. Veuillez confirmez votre choix.</p>
+                <div>
+                    <button className="cancel" onClick={handleCancel}>Annuler</button>
+                    <button className="confirm" onClick={handleValidation}>Confirmer</button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const AddMember = ({display, setDisplay, callback}) => {
+    const [value, setValue] = useState("");
+    
+    const handleCancel = () => {
+        setValue("");
+        setDisplay(false);
+        callback(
+            {
+                validation: false
+            });
+    }
+
+    const handleValidation = () => {
+        setValue("");
+        setDisplay(false);
+        callback(
+            {
+                validation: true,
+                pseudo: value,
+            }
+        );
+    }
+
+    return (
+        <div className={`chat-edit-container${display === true ? "" : " unvisible"}`}>
+            <div className="chat-edit-wrapper">
+                <h2>Ajouter un membre à la conversation</h2>
+                <input type="text" value={value} onChange={(e) => {setValue(e.target.value)}}/>
                 <div>
                     <button className="cancel" onClick={handleCancel}>Annuler</button>
                     <button className="confirm" onClick={handleValidation}>Confirmer</button>

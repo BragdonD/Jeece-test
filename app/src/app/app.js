@@ -56,20 +56,47 @@ function App() {
         //console.log("set user Chats");
         setChats(data.userChats.reverse());
       }
-      else if(data["updateChat"] !== undefined && chats !== undefined) {
+      else if(data["newChat"] !== undefined) {
         let temp = chats;
-        console.log(temp);
-        temp.forEach(element => {
-          if(element._id === data.updateChat._id) {
-            element.title = data.updateChat.title;
-          }
-        });
-        console.log({name:"test",temp});
+        temp.push(data.newChat);
         setChats(temp);
         setRender(!render);
       }
+      if(data["updateChat"] !== undefined && chats !== undefined) {
+        if(data.updateChat.title) {
+          let temp = chats;
+          temp.forEach(element => {
+            if(element._id === data.updateChat._id) {
+              element.title = data.updateChat.title;
+            }
+          });
+          setChats(temp);
+          setRender(!render);
+        }
+        if (data.updateChat.members) {
+          let temp = chats;
+          temp.forEach(element => {
+            if(element._id === data.updateChat._id) {
+              element.members = data.updateChat.members;
+            }
+          });
+          setChats(temp);
+          setRender(!render);
+        }
+        
+      }
     }
   };
+
+  const removeConversation = (value) => {
+    if(value === true) {
+      let temp = chats;
+      temp.splice(convSelected, 1);
+      setChats(temp);
+      setRender(!render);
+    }
+    
+  }
 
   useEffect(() => {
     setShowUserMenu(false)
@@ -118,6 +145,7 @@ function App() {
         conversation={chats !== undefined ? chats[convSelected] : undefined} 
         ws={Ws}
         id={memberData._id}
+        removeConversation={removeConversation}
       ></ChatBlock>
     </div>
   );
