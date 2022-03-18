@@ -49,6 +49,8 @@
 .chats-box-container .chats-box-wrapper .chat h1:active {
   background-color: #cccccc;
   border-radius: 5px;
+  -webkit-transform: r;
+          transform: r;
 }
 
 .chats-box-container .chats-box-wrapper .chat p {

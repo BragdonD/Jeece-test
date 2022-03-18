@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import "./chat-bar.css";
 
 export const ChatBar = ({chats, setSelected, selected}) => {
-    const [chatData, setChatData] = useState(chats);
+    //const [chatData, setChatData] = useState(chats);
 
     useEffect(() => {
-        setChatData(chats);
+
     }, [chats]);
 
     const handleClick = (nb) => {
@@ -17,7 +17,7 @@ export const ChatBar = ({chats, setSelected, selected}) => {
         <div className="chats-box-container">
             <div className="chats-box-wrapper">
                 {
-                    chatData === undefined ? "" : chatData.map( (elem, i) => {
+                    chats.map( (elem, i) => {
                         return (
                             <div id={elem._id} className={`chat${i === selected ? " selected" : ""}`} key={i} onClick={(e) => handleClick(i)}>
                                 <h1>{elem.title}</h1>

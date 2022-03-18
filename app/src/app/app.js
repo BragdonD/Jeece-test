@@ -18,52 +18,66 @@ const initial_data = {
   img : "",
 }
 
+let ws;
+
 function App() {
   const [memberData, setMemberData] = useState(initial_data); 
-  const [chats, setChats] = useState();
+  const [chats, setChats] = useState([]);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showPreference, setShowPreference] = useState(false);
   const [showNewMessage, setShowNewMessage] = useState(false);
   const [convSelected, setConvSelected] = useState(0);
-  const [Ws, setWs] = useState();
+  const [render, setRender] = useState(false);
+  const [Ws, setWs] = useState(new WebSocketClient('ws://localhost:3001/'));
 
-  useEffect(() => {
-
-    let ws = new WebSocketClient('ws://localhost:3001/');
-
-    ws.onerror = function() {
-      console.log('Connection Error');
-      window.location = "/login";
-    };
-    
-    ws.onopen = function() {
-      console.log('WebSocket Client Connected');
-    };
-    
-    ws.onclose = function() {
-      console.log('echo-protocol Client Closed');
-    };
-    
-    ws.onmessage = async function(e) {
-      if (typeof e.data === 'string') {
-          let data = JSON.parse(e.data);
-          console.log(data);
-          if(data["userData"] !== undefined)
-            setMemberData(data.userData);
-          if(data["userChats"] !== undefined) {
-            setChats(data.userChats.reverse());
-          }
+  Ws.onerror = function() {
+    console.log('Connection Error');
+    window.location = "/login";
+  };
+  
+  Ws.onopen = function() {
+    console.log('WebSocket Client Connected');
+  };
+  
+  Ws.onclose = function() {
+    console.log('echo-protocol Client Closed');
+    window.location = "/login";
+  };
+  
+  Ws.onmessage = function(e) {
+    if (typeof e.data === 'string') {
+      let data = JSON.parse(e.data);
+      console.log(data);
+      if(data["userData"] !== undefined){
+        //console.log("set member data");
+        setMemberData(data.userData);
       }
-    };
-    
-    setWs(ws);
-  }, []);
+      if(data["userChats"] !== undefined) {
+        //console.log("set user Chats");
+        setChats(data.userChats.reverse());
+      }
+      else if(data["updateChat"] !== undefined && chats !== undefined) {
+        let temp = chats;
+        console.log(temp);
+        temp.forEach(element => {
+          if(element._id === data.updateChat._id) {
+            element.title = data.updateChat.title;
+          }
+        });
+        console.log({name:"test",temp});
+        setChats(temp);
+        setRender(!render);
+      }
+    }
+  };
 
   useEffect(() => {
     setShowUserMenu(false)
   }, [showPreference])
 
-  useEffect(() => {}, [memberData]);
+  useEffect(() => {
+    //console.log(chats);
+  });
 
   useEffect(() => {
     if(showNewMessage === true)
