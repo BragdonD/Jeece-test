@@ -1,0 +1,266 @@
+.pref-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  z-index: 9000;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.pref-container .pref-wrapper {
+  position: relative;
+  padding: 15px 30px;
+  padding-top: 40px;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  max-width: 740px;
+  min-width: 460px;
+}
+
+.pref-container .pref-wrapper .close-button {
+  position: absolute;
+  right: 30px;
+  top: 15px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  border: none;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.pref-container .pref-wrapper .close-button:hover {
+  cursor: pointer;
+}
+
+.pref-container .pref-wrapper .pref-input-container .input {
+  min-width: 300px;
+  margin: 15px 0;
+}
+
+.pref-container .pref-wrapper .pref-input-container .input img {
+  border-radius: 50px;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.pref-container .pref-wrapper .pref-input-container .input .title-bloc h1 {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  font-weight: normal;
+}
+
+.pref-container .pref-wrapper .pref-input-container .input .main-bloc {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.pref-container .pref-wrapper .pref-input-container .input .main-bloc h1 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: normal;
+}
+
+.pref-container .pref-wrapper .pref-input-container .input .main-bloc button {
+  height: 32px;
+  min-width: 60px;
+  min-height: 32px;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border: none;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  padding: 2px 16px;
+  background-color: #4e5668;
+  color: #fff;
+}
+
+.pref-container .pref-wrapper .pref-input-container .input .main-bloc button:hover {
+  background-color: #404655;
+  cursor: pointer;
+}
+
+.input-modif-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #f1f1f1;
+  border-radius: inherit;
+}
+
+.input-modif-container .input-modif-wrapper {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  padding: 15px 30px;
+}
+
+.input-modif-container .input-modif-wrapper input {
+  width: 80%;
+  height: 30px;
+  border-radius: 30px;
+  outline: none;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.input-modif-container .input-modif-wrapper input[type="text"], .input-modif-container .input-modif-wrapper input[type="email"], .input-modif-container .input-modif-wrapper input[type="password"] {
+  text-indent: 2ch;
+}
+
+.input-modif-container .input-modif-wrapper input[type="submit"] {
+  width: 40%;
+  background-color: white;
+}
+
+.input-modif-container .input-modif-wrapper input[type="submit"]:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.input-modif-container .input-modif-wrapper input.wrong {
+  background-color: rgba(255, 0, 0, 0.4);
+}
+
+.input-modif-file-container i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  width: 110px !important;
+  height: 110px !important;
+  border-radius: 110px !important;
+}
+
+.input-modif-file-container i:hover {
+  cursor: pointer;
+}
+
+.input-modif-file-container i:hover:before {
+  content: "Changer";
+  text-transform: uppercase;
+  font-style: normal;
+  text-align: center;
+  line-height: 170px;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  width: 110px;
+  height: 110px;
+  border-radius: 110px;
+  background-color: rgba(255, 255, 255, 0.4);
+  z-index: 1;
+}
+
+.input-modif-file-container img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 110px;
+  height: 110px;
+  border-radius: 110px;
+}
+
+.input-modif-file-container input {
+  display: none;
+}
+
+.control-panel {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.control-panel button {
+  padding: 11px;
+  margin: 5px;
+  border: none;
+  border-radius: 10px;
+}
+
+.control-panel button.confirm {
+  background-color: #00ff88;
+}
+
+.control-panel button.cancel {
+  background-color: transparent;
+}
+
+.control-panel button:hover {
+  cursor: pointer;
+}
+
+.control-panel button:hover.confirm {
+  background-color: #18da7f;
+}
+
+.control-panel button:hover.cancel {
+  text-decoration: underline;
+}
+/*# sourceMappingURL=preferences.css.map */

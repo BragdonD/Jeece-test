@@ -1,0 +1,93 @@
+.chats-box-container {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.chats-box-container .chats-box-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.chats-box-container .chats-box-wrapper .chat {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  min-height: 60px;
+  width: 100%;
+  text-align: left;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.chats-box-container .chats-box-wrapper .chat h1 {
+  line-height: 30px;
+  max-width: 80%;
+  padding: 0 10%;
+  max-height: 30px;
+  margin: 0;
+  font-weight: normal;
+  font-size: 1em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chats-box-container .chats-box-wrapper .chat h1:active {
+  background-color: #cccccc;
+  border-radius: 5px;
+  -webkit-transform: r;
+          transform: r;
+}
+
+.chats-box-container .chats-box-wrapper .chat .last-message {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  max-width: 80%;
+  padding: 0 10%;
+  font-weight: normal;
+  font-size: 0.7em;
+}
+
+.chats-box-container .chats-box-wrapper .chat .last-message p {
+  margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chats-box-container .chats-box-wrapper .chat.selected {
+  background-color: #f0f0f0;
+}
+
+.chats-box-container .chats-box-wrapper .chat:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+}
+/*# sourceMappingURL=chat-bar.css.map */

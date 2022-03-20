@@ -1,0 +1,96 @@
+.register-container {
+  width: 100vw;
+  height: 100vh;
+  background: -webkit-gradient(linear, left top, right bottom, from(#c3cf8c), to(#a1e6bb));
+  background: linear-gradient(to bottom right, #c3cf8c 0%, #a1e6bb 100%);
+}
+
+.register-form-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 50%;
+  max-width: 400px;
+  padding: 15px 20px;
+  border-radius: 10px;
+  border: #fff 1px solid;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.register-form-wrapper h1 {
+  text-align: center;
+  color: #fff;
+}
+
+.register-form-wrapper div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.register-form-wrapper div input {
+  width: 100%;
+  height: 30px;
+  border-radius: 30px;
+  outline: none;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.register-form-wrapper div input[type="text"], .register-form-wrapper div input[type="email"], .register-form-wrapper div input[type="password"] {
+  text-indent: 2ch;
+}
+
+.register-form-wrapper div input[type="submit"] {
+  width: 40%;
+  background-color: white;
+}
+
+.register-form-wrapper div input[type="submit"]:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.register-form-wrapper div input.wrong {
+  background-color: rgba(150, 35, 35, 0.5);
+}
+
+.register-form-wrapper div input.correct {
+  background-color: rgba(32, 155, 104, 0.5);
+}
+
+.register-form-wrapper p {
+  margin: 5px 0;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.register-form-wrapper p a {
+  color: #fff;
+}
+
+.register-form-wrapper p.error {
+  color: #9c2626;
+}
+
+.register-form-wrapper p.unvisible {
+  display: none;
+}
+/*# sourceMappingURL=register.css.map */

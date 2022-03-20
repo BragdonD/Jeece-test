@@ -1,5 +1,7 @@
-import { Model, Schema } from "mongoose";
-import { MemberModel } from "../../../Documents/nodejs/jeece/test/server/src/member.mjs";
+import mongoose from "mongoose";
+const Model = mongoose.model;
+const Schema = mongoose.Schema;
+
 
 const memberSchema = new Schema(
     {
@@ -30,8 +32,7 @@ const memberSchema = new Schema(
         },
         img : {
             type: String,
-            required: true,
-            default: "",
+            default: "basic-pp.png",
         },
     },
     {
@@ -44,38 +45,47 @@ const memberSchema = new Schema(
 
 const member = Model( "Member", memberSchema );
 
-const createMember = ( f, l, e, p, pw, i ) => {
+const createMember = ( f, l, e, p, pw ) => {
     return new member({
         firstName: f,
         lastName: l,
         email: e,
         pseudo: p,
         password: pw,
-        img: i,
     });
 }
 
-const getMember = ( id ) => {
-    return MemberModel.find(
+const getMember = async ( id ) => {
+    return await member.find(
         {
             _id: id
         }
-    )[0]
+    ).exec();
+}
+
+const getMemberByPseudo = async ( p ) => {
+    return await member.find(
+        {
+            pseudo: p
+        }
+    ).exec();
 }
 
 const updateMember = ( id, d, v) => {
-    return MemberModel.findOneAndUpdate(
+    member.findOneAndUpdate(
         {
             _id: id,
         },
         {
             [d]: v,
         },
-    )[0]
+    ).exec();
 }
 
-module.exports = {
-    getMember,
-    updateMember,
+export default {
     createMember,
+    getMember,
+    getMemberByPseudo,
+    updateMember,
 };
+
