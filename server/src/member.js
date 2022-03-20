@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 const Model = mongoose.model;
 const Schema = mongoose.Schema;
 
+
 const memberSchema = new Schema(
     {
         firstName: {
@@ -87,3 +88,4 @@ export default {
     getMemberByPseudo,
     updateMember,
 };
+
