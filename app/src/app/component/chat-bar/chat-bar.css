@@ -27,6 +27,17 @@
 }
 
 .chats-box-container .chats-box-wrapper .chat {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  min-height: 60px;
   width: 100%;
   text-align: left;
   border-radius: 5px;
@@ -34,10 +45,10 @@
 }
 
 .chats-box-container .chats-box-wrapper .chat h1 {
-  line-height: 60px;
+  line-height: 30px;
   max-width: 80%;
   padding: 0 10%;
-  max-height: 60px;
+  max-height: 30px;
   margin: 0;
   font-weight: normal;
   font-size: 1em;
@@ -53,8 +64,22 @@
           transform: r;
 }
 
-.chats-box-container .chats-box-wrapper .chat p {
+.chats-box-container .chats-box-wrapper .chat .last-message {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  max-width: 80%;
+  padding: 0 10%;
+  font-weight: normal;
+  font-size: 0.7em;
+}
+
+.chats-box-container .chats-box-wrapper .chat .last-message p {
   margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chats-box-container .chats-box-wrapper .chat.selected {

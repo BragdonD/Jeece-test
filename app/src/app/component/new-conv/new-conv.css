@@ -37,7 +37,7 @@
           align-items: center;
   -ms-flex-pack: distribute;
       justify-content: space-around;
-  background-color: rgba(216, 216, 216, 0.5);
+  background-color: #d8d8d8;
   border-radius: 5px;
 }
 
@@ -117,6 +117,18 @@
   background-color: rgba(0, 174, 255, 0.548);
 }
 
+.people-list button {
+  border: none;
+  padding: 5px;
+  margin-left: 7px;
+  background-color: transparent;
+}
+
+.people-list button:hover {
+  cursor: pointer;
+  color: white;
+}
+
 .add-people-to-list {
   padding: 7px 10px;
   border-radius: 60px;
@@ -125,5 +137,25 @@
 
 .add-people-to-list:hover {
   cursor: pointer;
+}
+
+input[type="date"],
+input[type="time"] {
+  margin-top: 30px;
+  display: block;
+  position: relative;
+  padding: 1rem 3.5rem 1rem 0.75rem;
+  font-size: 1rem;
+  font-family: monospace;
+  border: 1px solid #8292a2;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+input[type="date"]:focus {
+  outline: none;
+  border-color: #3acfff;
+  -webkit-box-shadow: 0 0 0 0.25rem rgba(0, 120, 250, 0.1);
+          box-shadow: 0 0 0 0.25rem rgba(0, 120, 250, 0.1);
 }
 /*# sourceMappingURL=new-conv.css.map */

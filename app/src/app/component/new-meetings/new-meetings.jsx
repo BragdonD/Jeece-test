@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 import { w3cwebsocket } from "websocket";
-import "./new-conv.css"
 
-export const NewConv = ({ display, setDisplay, ws }) => {
+export const NewMeetings = ({ display, setDisplay, ws }) => {
     const [nbPeople, setNbPeople] = useState(0);
     const [PeopleList, setPeopleList] = useState([]);
     const [title, setTitle] = useState("");
+    const [date, setDate] = useState();
+    const [hour, setHour] = useState();
     const [newPerson, setNewPerson] = useState("");
 
     useEffect(() => {}, [display]);
@@ -15,15 +16,19 @@ export const NewConv = ({ display, setDisplay, ws }) => {
     const handleCancel = () => {
         setTitle("");
         setPeopleList([]);
+        setDate();
+        setHour();
         setDisplay(false);
     }
 
     const handleSubmit = () => {
-        if(title.length !== 0 && PeopleList.length !== 0) {
+        if(title.length !== 0 && PeopleList.length !== 0 && date !== undefined && hour !== undefined) {
             ws.send(JSON.stringify({
-                task: "new conv",
+                task: "new meetings",
                 title: title,
                 people: PeopleList,
+                date: date,
+                hour: hour
             }));
             handleCancel();
         }
@@ -42,23 +47,39 @@ export const NewConv = ({ display, setDisplay, ws }) => {
     return (
         <div className={display === false ? "unvisible" : "" + " new-conv-container"}>
             <div className="new-conv-wrapper">
-                <h1>Créer une nouvelle conversation</h1>
+                <h1>Créer une nouvelle réunion</h1>
                 <input type={"text"} value={title} placeholder={"Nom"} onChange={e => {setTitle(e.target.value)}}></input>
+                <div >
+                    <input type={"date"} value={date} onChange={(e) => {
+                        setDate(e.target.value);
+                    }}></input> 
+                    
+                </div>
+                <div >
+                    <input type={"time"} value={hour} onChange={(e) => {
+                        setHour(e.target.value);
+                    }}></input> 
+                    
+                </div>
                 <div className="people-list">
                     {
                         PeopleList.map((elem, i) => {
                             return(
-                                <p key={i}>
-                                    {elem}
-                                    <button onClick={e => {
-                                        let temp = PeopleList;
-                                        temp.splice(temp.findIndex(obj => {
-                                            return obj === elem;
-                                        }),1);
-                                        setPeopleList(temp);
-                                        setNbPeople(temp.length);
-                                    }}>X</button>
-                                </p>
+                                <div key={i}>
+                                   <p>
+                                       {elem}
+                                       <button onClick={e => {
+                                            let temp = PeopleList;
+                                            temp.splice(temp.findIndex(obj => {
+                                               return obj === elem;
+                                            }),1);
+                                            setPeopleList(temp);
+                                            setNbPeople(temp.length);
+                                       }}>X</button>
+                                    </p> 
+                                   
+                                </div>
+                                
                             )
                         })
                     }
@@ -76,7 +97,7 @@ export const NewConv = ({ display, setDisplay, ws }) => {
     )
 }
 
-NewConv.propTypes = {
+NewMeetings.propTypes = {
     display: PropTypes.bool,
     setDisplay: PropTypes.func,
     ws: PropTypes.objectOf(w3cwebsocket)

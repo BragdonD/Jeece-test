@@ -1,0 +1,144 @@
+.meetings-container {
+  position: absolute;
+  top: 0;
+  background-color: #fff;
+  width: 100%;
+  height: 100%;
+  border-right: 1px solid lightgrey;
+}
+
+.meetings-container h1 {
+  text-align: center;
+}
+
+.meetings-container button {
+  margin-left: 15px;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 50px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border: none;
+}
+
+.meetings-container button:hover {
+  cursor: pointer;
+}
+
+.meetings-container .meetings-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  max-height: calc(100% - 100px);
+  overflow-y: auto;
+}
+
+.meetings-container .meetings-wrapper .meeting {
+  background-color: whitesmoke;
+  margin: 5px 0;
+  padding: 10px;
+  width: 80%;
+  border-radius: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: relative;
+}
+
+.meetings-container .meetings-wrapper .meeting .delete {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+}
+
+.meetings-container .meetings-wrapper .meeting .delete:hover {
+  cursor: pointer;
+}
+
+.meetings-container .meetings-wrapper .meeting .delete:hover svg {
+  fill: #747474;
+}
+
+.meetings-container .meetings-wrapper .meeting h1 {
+  margin: 0;
+  font-size: 1em;
+}
+
+.meetings-container .meetings-wrapper .meeting p {
+  font-size: 0.8em;
+}
+
+.meetings-container .meetings-wrapper .meeting.Accepted {
+  background-color: #6fd18d;
+}
+
+.meetings-container .meetings-wrapper .meeting.Refused {
+  display: none;
+}
+
+.meetings-container .meetings-wrapper .meeting div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 80%;
+}
+
+.meetings-container .meetings-wrapper .meeting div button {
+  padding: 5px 10px;
+  margin: 0;
+  border-radius: 5px;
+  color: #fff;
+  border: none;
+}
+
+.meetings-container .meetings-wrapper .meeting div button.cancel {
+  background-color: #d61d1d;
+}
+
+.meetings-container .meetings-wrapper .meeting div button.cancel:hover {
+  background-color: #ad1818;
+}
+
+.meetings-container .meetings-wrapper .meeting div button.confirm {
+  background-color: #206bf5;
+}
+
+.meetings-container .meetings-wrapper .meeting div button.confirm:hover {
+  background-color: #1b58ca;
+}
+
+.meetings-container .meetings-wrapper .meeting div button:hover {
+  cursor: pointer;
+}
+/*# sourceMappingURL=meetings.css.map */

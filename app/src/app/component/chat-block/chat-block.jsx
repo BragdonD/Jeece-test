@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { w3cwebsocket } from "websocket";
 import PropTypes from 'prop-types';
+import ScrollableFeed from 'react-scrollable-feed';
 import "./chat-block.css";
 
 export const ChatBlock = ({conversation, ws, id, removeConversation}) => {
-    const [displayParameter, setDisplayParameter] = useState(true);
+    const [displayParameter, setDisplayParameter] = useState(false);
     const [displayChangeNameConv, setDisplayChangeNameConv] = useState(false);
     const [displayLeaveConv, setDisplayLeaveConv] = useState(false);
     const [displayAddMember, setDisplayAddMember] = useState(false);
@@ -64,9 +65,11 @@ export const ChatBlock = ({conversation, ws, id, removeConversation}) => {
         <div className="chat-block-container">
             <div className="main-conv-wrapper">
                 <MainConvBlock 
+                    ws={ws}
                     conversation={conversation} 
                     setDisplayParameter={setDisplayParameter} 
                     displayParameter={displayParameter}
+                    id={id}
                 ></MainConvBlock>
             </div>
             <ModifyConvBlock
@@ -104,25 +107,176 @@ ChatBlock.propTypes = {
     id: PropTypes.string
 }
 
-const MainConvBlock = ({conversation, setDisplayParameter, displayParameter}) => {
+const MainConvBlock = ({conversation, ws, id, setDisplayParameter, displayParameter}) => {
+    const [MsgValue, setMsgValue] = useState("");
+    const [bufferKey, setBufferKey] = useState([]);
+    const [render, setRender] = useState(false);
+    const [admin, setAdmin] = useState(false);
+
+    const handleChange = (value) => {
+        setMsgValue(value);
+    };
     const handleClickParameter = () => {
-        console.log("here");
         setDisplayParameter(!displayParameter)
     }
+    const handleSubmitNewMessage = () => {
+        if(MsgValue.length !== 0) {
+            ws.send(JSON.stringify({
+                task: "add message",
+                _id: conversation._id,
+                creator: id,
+                msg: MsgValue
+            }));
+        }
+
+        setMsgValue("");
+        document.getElementById("new-message-input").innerHTML = "";
+    }
+
+    const handleDeleteMessage = (id) => {
+        ws.send(JSON.stringify({
+            task: "delete message",
+            _id: conversation._id,
+            id: id,
+        }));
+    }
+
+    useEffect(() => {
+        if(MsgValue.length === 1) {
+            if(MsgValue === "\n") {
+                setMsgValue("");
+                document.getElementById("new-message-input").removeChild(document.getElementById("new-message-input").childNodes[0])
+            }
+        }
+    }, [MsgValue])
+
+    useEffect(() => {
+    }, [render])
+
+    useEffect(() => {
+        if(conversation !== undefined) {
+            if(conversation.members !== undefined) {
+                const user = conversation.members.find(obj => {
+                    return obj._id === id
+                });
+                const user_role = user.role;
+                if(user_role === "admin") {
+                    setAdmin(true);
+                }
+                else {
+                    setAdmin(false);
+                }
+            }
+            
+        }
+    }, [conversation])
 
     return (
-        <div className="header-conv">
-            <h1 className="title-conv">{conversation !== undefined ? conversation.title : undefined}</h1>
-            <div className="menu-conv">
-                <div onClick={handleClickParameter}>
-                    <svg viewBox="0 0 36 36" height="28" width="28">
-                        <path
-                            d="M12.5 18A2.25 2.25 0 118 18a2.25 2.25 0 014.5 0zm7.75 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm5.5 2.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z">
-                        </path>
-                    </svg>
+        <div className="main-bloc">
+            <div className="header-conv">
+                <h1 className="title-conv">{conversation !== undefined ? conversation.title : undefined}</h1>
+                <div className="menu-conv">
+                    <div onClick={handleClickParameter}>
+                        <svg viewBox="0 0 36 36" height="28" width="28">
+                            <path
+                                d="M12.5 18A2.25 2.25 0 118 18a2.25 2.25 0 014.5 0zm7.75 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm5.5 2.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <ScrollableFeed className="messages-container">
+                {
+                    conversation === undefined ? undefined : 
+                    conversation.messages.map((elem, i) => {
+                        return (
+                            <div className={`message${elem._id_creator === id ? " mine" : ""}`} key={i}>
+                                <div className="msg-img-creator-wrapper">
+                                    <img className="msg-img-creator" src={`/member/image/${elem._id_creator}`}></img>
+                                </div>
+                                <p>
+                                {
+                                    elem.text
+                                }  
+                                </p>
+                                <div className="message-menu-wrapper">
+                                    <>
+                                    {
+                                        admin === false && elem._id_creator !== id  ? undefined : 
+                                        <div className="message-menu-button" onClick={e => {
+                                            if(document.getElementById(`message-menu-${elem._id}`).classList.contains("unvisible"))
+                                                document.getElementById(`message-menu-${elem._id}`).classList.remove("unvisible");
+                                            else 
+                                                document.getElementById(`message-menu-${elem._id}`).classList.add("unvisible");
+                                        }}>
+                                            <svg width="22px" height="22px" viewBox="0 0 22 22">
+                                                <circle cx="11" cy="6" r="2" strokeWidth="1px" fill="var(--placeholder-icon)"></circle>
+                                                <circle cx="11" cy="11" r="2" strokeWidth="1px" fill="var(--placeholder-icon)"></circle>
+                                                <circle cx="11" cy="16" r="2" strokeWidth="1px" fill="var(--placeholder-icon)"></circle>
+                                            </svg>
+                                        </div>
+                                    } 
+                                    </>                                
+                                    <div id={`message-menu-${elem._id}`} className="unvisible message-menu">
+                                        {
+                                            admin === false && elem._id_creator !== id ? undefined : 
+                                            <h1 onClick={(e) => {
+                                                handleDeleteMessage(elem._id);
+                                            }}>Supprimer</h1>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })
+                }
+            </ScrollableFeed>
+            
+            <div className="new-message-input-container"> 
+                <div className="new-message-input-wrapper">
+                    <div className="new-message-input-wrapper2">
+                        <EditableElement onChange={handleChange}>
+                            <p id="new-message-input"
+                                data-placeholder="Aa"
+                                onKeyDown={(e) => {
+                                    let KeysPressed = bufferKey;
+                                    if(KeysPressed.find(obj => { return obj === e.key}) === undefined) {
+                                        KeysPressed.push(e.key);
+                                        setBufferKey(KeysPressed);
+                                    }
+
+                                    if(MsgValue.length === 0 && e.key === "Backspace") setMsgValue("");
+
+                                    if(KeysPressed.find(obj => { return obj === "Shift"}) === undefined && e.key === "Enter") {
+                                        handleSubmitNewMessage();
+                                    }
+
+                                    setRender(!render);
+                                }}
+                                onKeyUpCapture={
+                                    (e) => {
+                                        let KeysPressed = bufferKey;
+                                        KeysPressed.splice(KeysPressed.indexOf(KeysPressed[e.key],0),1);
+                                        
+                                        setBufferKey(KeysPressed);
+                                    }
+                                }
+                            >
+                            </p>
+                        </EditableElement>
+                    </div>
+                    
+                    <div className="submit" onClick={handleSubmitNewMessage}>
+                        <svg width="20px" height="20px" viewBox="0 0 24 24">
+                            <path d="M16.6915026,12.4744748 L3.50612381,13.2599618 C3.19218622,13.2599618 3.03521743,13.4170592 3.03521743,13.5741566 L1.15159189,20.0151496 C0.8376543,20.8006365 0.99,21.89 1.77946707,22.52 C2.41,22.99 3.50612381,23.1 4.13399899,22.8429026 L21.714504,14.0454487 C22.6563168,13.5741566 23.1272231,12.6315722 22.9702544,11.6889879 C22.8132856,11.0605983 22.3423792,10.4322088 21.714504,10.118014 L4.13399899,1.16346272 C3.34915502,0.9 2.40734225,1.00636533 1.77946707,1.4776575 C0.994623095,2.10604706 0.8376543,3.0486314 1.15159189,3.99121575 L3.03521743,10.4322088 C3.03521743,10.5893061 3.34915502,10.7464035 3.50612381,10.7464035 L16.6915026,11.5318905 C16.6915026,11.5318905 17.1624089,11.5318905 17.1624089,12.0031827 C17.1624089,12.4744748 16.6915026,12.4744748 16.6915026,12.4744748 Z" fill="#f0f0f0">
+                            </path>
+                        </svg>
+                    </div>
+                    
                 </div>
             </div>
         </div>
+        
     )
 }
 
@@ -132,10 +286,44 @@ MainConvBlock.propTypes = {
     setDisplayParameter: PropTypes.func
 }
 
+const EditableElement = (props) => {
+    const { onChange } = props;
+    const element = useRef();
+    let elements = React.Children.toArray(props.children);
+    if (elements.length > 1) {
+      throw Error("Can't have more than one child");
+    }
+    const onMouseUp = () => {
+      const value = element.current?.value || element.current?.innerText;
+      if (onChange) {
+        onChange(value);
+      }
+    };
+    useEffect(() => {
+      const value = element.current?.value || element.current?.innerText;
+      if (onChange) {
+        onChange(value);
+      }
+    }, []);
+    elements = React.cloneElement(elements[0], {
+      contentEditable: true,
+      suppressContentEditableWarning: true,
+      ref: element,
+      onKeyUp: onMouseUp
+    });
+    return elements;
+  };
+
 const ModifyConvBlock = ({conversation, ws, display, id, setDisplayChangeNameConv, setDisplayLeaveConv, setDisplayAddMember}) => {
     const [admin, setAdmin] = useState(false);
     const [displayMembers, setDisplayMembers] = useState(false);
     const [displayParameters, setDisplayParameters] = useState(false);
+    const [displayInputName, setDisplayInputName] = useState({value: false, id: ""});
+    const [newNameValue, setNewName] = useState("");
+
+    useEffect(() => {
+        setNewName("");
+    }, [displayInputName])
 
     useEffect(() => {
         if(conversation !== undefined) {
@@ -165,6 +353,31 @@ const ModifyConvBlock = ({conversation, ws, display, id, setDisplayChangeNameCon
 
     const handleAddMember = () => {
         setDisplayAddMember(true);
+    }
+
+    const handleUpgradeAdmin = (id) => {
+        ws.send(JSON.stringify({
+            task: "upgrade to admin",
+            _id: conversation._id,
+            member: id
+        }));
+    }
+
+    const handleKick = (id) => {
+        ws.send(JSON.stringify({
+            task: "delete member",
+            _id: conversation._id,
+            person: id
+        }));
+    }
+
+    const handleNewName = (id) => {
+        ws.send(JSON.stringify({
+            task: "update pseudo",
+            _id: conversation._id,
+            member: id,
+            pseudo: newNameValue
+        }));
     }
 
     return (
@@ -217,20 +430,105 @@ const ModifyConvBlock = ({conversation, ws, display, id, setDisplayChangeNameCon
                                 <img className="member-image" src={`/member/image/${elem._id}`}/>
                                 <div className="right-member-part">
                                     <div>
-                                        <h1 className={elem.role}>{elem.pseudo}</h1> 
+                                        <>
+                                        {
+                                            displayInputName.value === false ? 
+                                                <h1 className={elem.role}>{elem.pseudo}</h1> :
+                                                elem._id !== displayInputName.id ?
+                                                    <h1 className={elem.role}>{elem.pseudo}</h1> :
+                                                    <input placeholder={elem.pseudo} value={newNameValue} onKeyDown={(e) => {
+                                                        if(e.key === "Enter") {
+                                                            handleNewName(elem._id)
+                                                            setDisplayInputName({
+                                                                value: false,
+                                                                id: ""
+                                                            });
+                                                        }
+                                                        else if(e.key == "Escape") {
+                                                            setDisplayInputName({
+                                                                value: false,
+                                                                id: ""
+                                                            });
+                                                        }
+                                                    }} 
+                                                    onChange={(e) => {
+                                                        setNewName(e.target.value);
+                                                    }}></input>
+                                        }
+                                        </>                                        
                                         <>
                                         {
                                             elem.role !== "admin" ? undefined : <p>Admin</p>
                                         }
                                         </>
                                     </div>
-                                    <div className="options-control-member">
+                                    <div className="options-control-member" onClick={(e) => {
+                                        setDisplayInputName({value: false, id: ""});
+                                        if(document.getElementById(`${elem._id}-menu`) !== null){
+                                            if(document.getElementById(`${elem._id}-menu`).classList.contains("unvisible"))
+                                                document.getElementById(`${elem._id}-menu`).classList.remove("unvisible")
+                                            else 
+                                                document.getElementById(`${elem._id}-menu`).classList.add("unvisible")
+                                        }
+                                        for(const it of document.getElementsByClassName("menu-conv-user-container")) {
+                                            if(it !== document.getElementById(`${elem._id}-menu`))
+                                                it.classList.add("unvisible");
+                                        }
+                                        
+                                    }}>
                                         <svg viewBox="0 0 36 36" height="28" width="28">
                                             <path
                                                 d="M12.5 18A2.25 2.25 0 118 18a2.25 2.25 0 014.5 0zm7.75 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm5.5 2.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z">
                                             </path>
                                         </svg>
                                     </div>
+                                    <>
+                                    {
+                                        (elem._id !== id && admin !== true) || (elem.role === "admin" && elem._id !== id)  ? undefined : 
+                                        <div id={`${elem._id}-menu`} className="unvisible menu-conv-user-container">
+                                            <>
+                                            {
+                                                elem._id !== id && admin !== true ? undefined : 
+                                                <div onClick={(e) => {
+                                                    setDisplayInputName({
+                                                        value: !displayInputName.value,
+                                                        id: elem._id
+                                                    });
+                                                    if(document.getElementById(`${elem._id}-menu`) !== null){
+                                                        if(document.getElementById(`${elem._id}-menu`).classList.contains("unvisible"))
+                                                            document.getElementById(`${elem._id}-menu`).classList.remove("unvisible")
+                                                        else 
+                                                            document.getElementById(`${elem._id}-menu`).classList.add("unvisible")
+                                                    }
+                                                }}>
+                                                    <h2>Changer pseudo</h2>
+                                                </div>
+                                            }
+                                            </>
+                                            <>
+                                            {
+                                                admin !== true || elem.role === "admin" ? undefined : 
+                                                <div onClick={(e) => {
+                                                    handleUpgradeAdmin(elem._id)
+                                                }}>
+                                                    <h2>Rendre administrateur</h2>
+                                                </div>
+                                            }
+                                            </>
+                                            <>
+                                            {
+                                                elem._id === id || admin !== true || elem.role === "admin" ? undefined : 
+                                                <div onClick={(e) => {
+                                                    handleKick(elem._id)
+                                                }}>
+                                                    <h2>Exclure du groupe</h2>
+                                                </div>
+                                            }
+                                            </>
+                                            
+                                        </div>
+                                    }
+                                    </>
                                 </div>
                             </div>
                         )

@@ -214,3 +214,20 @@ app.get("/member/image/:id",
         res.sendFile(path.join(fileURLToPath(import.meta.url), `../../private/img/${temp.img}`));
     }
 );
+
+app.get("/member/pseudo/:id", 
+    /**
+     * 
+     * @param {request} req 
+     * @param {response} res 
+     */
+    async function (req, res) {
+        if(req.params.id !== "undefined") {
+            const temp = (await member.getMember(req.params.id))[0];
+            res.send(JSON.stringify({
+                pseudo: temp.pseudo
+            }));
+        }
+        
+    }
+);

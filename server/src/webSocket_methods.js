@@ -1,6 +1,7 @@
 import { server } from "./server.js";
 import member from "./member.js";
 import chat from "./chat.js";
+import meeting from "./meeting.js";
 import jsonwebtoken from "jsonwebtoken";
 import ws from "websocket";
 const WebSocketServer = ws.server;
@@ -64,7 +65,8 @@ wsServer.on("request",
 
             connection.send(JSON.stringify({
                 userData: (await member.getMember(resTestOrigin._id))[0],
-                userChats: (await chat.getChats(resTestOrigin._id))
+                userChats: (await chat.getChats(resTestOrigin._id)),
+                userMeetings: (await meeting.getMeetings(resTestOrigin._id))
             }));
 
             connection.on('message', async function(message) {
@@ -72,7 +74,7 @@ wsServer.on("request",
                     if (message.type === 'utf8') {
                         const string = message.utf8Data;
                         const data = JSON.parse(string)
-                        console.log(data);
+                        //console.log(data);
 
                         if(data["task"] === "new conv") {
                             const creator = clients.find(obj => {
@@ -116,16 +118,23 @@ wsServer.on("request",
                             const temp = await chat.removeMember(data._id, data.person);
                             for(const it of temp.members) {
                                 let toUpt = clients.filter(obj => {
-                                    return obj.id === it._id;
+                                    return obj.id === it._id || obj.id === data.person;
                                 });
                                 if(toUpt.length !== 0) {
                                     for(const it2 of toUpt) {
-                                        it2.ws.send(JSON.stringify({
-                                            updateChat: {
-                                                _id: data._id,
-                                                members: temp.members
-                                            }
-                                        }))
+                                        if(it2.id === data.person) {
+                                            it2.ws.send(JSON.stringify({
+                                                userChats: (await chat.getChats(data.person._id))
+                                            }))
+                                        }
+                                        else {
+                                            it2.ws.send(JSON.stringify({
+                                                updateChat: {
+                                                    _id: data._id,
+                                                    members: temp.members
+                                                }
+                                            }))
+                                        }
                                     }
                                 }
                             }
@@ -141,9 +150,9 @@ wsServer.on("request",
                                         const newMemberID = (await member.getMemberByPseudo(data.pseudo))[0]._id;
                                         console.log(newMemberID);
                                         for(const it2 of toUpt) {
-                                            if(it2.id === newMemberID) {
+                                            if(it2.id === newMemberID.toString()) {
                                                 it2.ws.send(JSON.stringify({
-                                                    newChat: temp
+                                                    userChats: (await chat.getChats(newMemberID))
                                                 }))
                                             }
                                             else {
@@ -155,6 +164,144 @@ wsServer.on("request",
                                                 }))
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "upgrade to admin"){
+                            const temp = await chat.UpgradeToAdmin(data._id, data.member);
+                            for(const it of temp.members) {
+                                let toUpt = clients.filter(obj => {
+                                    return obj.id === it._id;
+                                });
+                                if(toUpt.length !== 0) {
+                                    for(const it2 of toUpt) {
+                                        it2.ws.send(JSON.stringify({
+                                            updateChat: {
+                                                _id: data._id,
+                                                members: temp.members
+                                            }
+                                        }))
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "update pseudo") {
+                            const temp = await chat.UpdateMemberPseudo(data._id, data.member, data.pseudo);
+                            for(const it of temp.members) {
+                                let toUpt = clients.filter(obj => {
+                                    return obj.id === it._id;
+                                });
+                                if(toUpt.length !== 0) {
+                                    for(const it2 of toUpt) {
+                                        it2.ws.send(JSON.stringify({
+                                            updateChat: {
+                                                _id: data._id,
+                                                members: temp.members
+                                            }
+                                        }))
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "add message") {
+                            const temp = await chat.AddMessage(data._id, data.creator, data.msg);
+                            for(const it of temp.members) {
+                                let toUpt = clients.filter(obj => {
+                                    return obj.id === it._id;
+                                });
+                                if(toUpt.length !== 0) {
+                                    for(const it2 of toUpt) {
+                                        it2.ws.send(JSON.stringify({
+                                            updateChat: {
+                                                _id: data._id,
+                                                messages: temp.messages
+                                            }
+                                        }))
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "delete message") {
+                            const temp = await chat.DeleteMessage(data._id, data.id);
+                            for(const it of temp.members) {
+                                let toUpt = clients.filter(obj => {
+                                    return obj.id === it._id;
+                                });
+                                if(toUpt.length !== 0) {
+                                    for(const it2 of toUpt) {
+                                        it2.ws.send(JSON.stringify({
+                                            updateChat: {
+                                                _id: data._id,
+                                                messages: temp.messages
+                                            }
+                                        }))
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "new meetings") {
+                            const creator = clients.find(obj => {
+                                return obj.ws === connection;
+                            }).id;
+                            data.people.unshift(creator);                            
+                            const temp = await meeting.createMeeting(data.title, data.people, data.date, data.hour);
+                            await temp.save();
+                            for(const it of temp.members) {
+                                let toUpt = clients.filter(obj => {
+                                    return obj.id === it._id;
+                                });
+                                if(toUpt.length !== 0) {
+                                    for(const it2 of toUpt) {
+                                        it2.ws.send(JSON.stringify({
+                                            userMeetings: (await meeting.getMeetings(it2.id))
+                                        }))
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "accept meeting") {
+                            const temp = await meeting.AcceptMeeting(data._id, data.member);
+                            for(const it of temp.members) {
+                                let toUpt = clients.filter(obj => {
+                                    return obj.id === it._id;
+                                });
+                                if(toUpt.length !== 0) {
+                                    for(const it2 of toUpt) {
+                                        it2.ws.send(JSON.stringify({
+                                            userMeetings: (await meeting.getMeetings(it2.id))
+                                        }))
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "refuse meeting") {
+                            const temp = await meeting.RefuseMeeting(data._id, data.member);
+                            for(const it of temp.members) {
+                                let toUpt = clients.filter(obj => {
+                                    return obj.id === it._id;
+                                });
+                                if(toUpt.length !== 0) {
+                                    for(const it2 of toUpt) {
+                                        it2.ws.send(JSON.stringify({
+                                            userMeetings: (await meeting.getMeetings(it2.id))
+                                        }))
+                                    }
+                                }
+                            }
+                        }
+                        else if(data["task"] === "delete meeting") {
+                            const members = (await meeting.getMeeting(data._id))[0].members;
+                            await meeting.DeleteMeeting(data._id);
+                            for(const it of members) {
+                                let toUpt = clients.filter(obj => {
+                                    return obj.id === it._id;
+                                });
+                                if(toUpt.length !== 0) {
+                                    for(const it2 of toUpt) {
+                                        it2.ws.send(JSON.stringify({
+                                            userMeetings: (await meeting.getMeetings(it2.id))
+                                        }))
                                     }
                                 }
                             }

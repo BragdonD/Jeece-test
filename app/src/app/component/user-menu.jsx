@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 
-export const UserMenu = ({visibilty, setShowPreference }) => {
+export const UserMenu = ({visibilty, setShowPreference, setShowNewMeeting, setShowMeeting}) => {
     const handlePrefClick = () => {
         setShowPreference(true);
     }
 
     const handleDisconnection = () => {
         window.location = "/login"
+    }
+
+    const handleShowMeetingCick = () => {
+        setShowNewMeeting(true);
     }
 
     return (
@@ -21,7 +25,7 @@ export const UserMenu = ({visibilty, setShowPreference }) => {
                         <p>Préférences</p>
                     </div>
                 </li>
-                <li className="user-menu-choice">
+                <li className="user-menu-choice" onClick={(e) => {setShowMeeting(true)}}>
                     <div>
                         <svg viewBox="0 0 36 36" height="24" width="24">
                             <path fillRule="evenodd" clipRule="evenodd" d="M18 28.074c6.394 0 11-4.467 11-10.57v-.002c0-6.103-4.606-10.498-11-10.498-6.392 0-10.998 4.395-11 10.498v.002c.001 2.091.415 3.98 1.384 5.562.458.747.563 1.664.29 2.5l-.728 2.41c-.2.614.373 1.188.964.986l3.668-1.125a4.26 4.26 0 012.39-.09c.953.232 1.967.327 3.032.327zM13 19.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm6.5-1.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"></path>
@@ -29,7 +33,7 @@ export const UserMenu = ({visibilty, setShowPreference }) => {
                         <p>Invitations aux réunions</p>
                     </div>
                 </li>
-                <li className="user-menu-choice">
+                <li className="user-menu-choice" onClick={handleShowMeetingCick}>
                     <div>
                         <svg viewBox="0 0 36 36" height="24" width="24">
                             <path fillRule="evenodd" clipRule="evenodd" d="M18 9c-.69 0-1.25.56-1.25 1.25v6.25a.25.25 0 01-.25.25h-6.25a1.25 1.25 0 100 2.5h6.25a.25.25 0 01.25.25v6.25a1.25 1.25 0 102.5 0V19.5a.25.25 0 01.25-.25h6.25a1.25 1.25 0 100-2.5H19.5a.25.25 0 01-.25-.25v-6.25C19.25 9.56 18.69 9 18 9z"></path>
@@ -54,4 +58,5 @@ export const UserMenu = ({visibilty, setShowPreference }) => {
 UserMenu.propTypes = {
     visibilty: PropTypes.bool,
     setShowPreference: PropTypes.func,
+    setShowNewMeeting: PropTypes.func,
 }

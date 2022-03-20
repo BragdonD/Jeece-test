@@ -1,0 +1,109 @@
+.meetings-container {
+    position: absolute;
+    top: 0;
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    border-right: 1px solid lightgrey;
+
+    h1 {
+        text-align: center;
+    }
+
+    button {
+        margin-left: 15px;
+        margin-top: 15px ;
+        padding: 10px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .meetings-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-height: calc(100% - 100px);
+        overflow-y: auto;
+
+        .meeting {
+            background-color: rgb(245, 245, 245);
+            margin: 5px 0;
+            padding: 10px;
+            width: 80%;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+
+            .delete {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                width: 24px;
+
+                &:hover {
+                    cursor: pointer;
+                    svg {
+                        fill: rgb(116, 116, 116)
+                    }
+                }
+            }
+
+            h1 {
+                margin: 0;
+                font-size: 1em;
+            }
+
+            p {
+                font-size: 0.8em;
+            }
+            
+            &.Accepted {
+                background-color: rgb(111, 209, 141);
+            }
+
+            &.Refused {
+                display: none;
+            }
+
+            div {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 80%;
+                
+                button {
+                    padding: 5px 10px;
+                    margin: 0;
+                    border-radius: 5px;
+                    color: #fff;
+                    border: none;
+                    &.cancel {
+                        background-color: rgb(214, 29, 29);
+                        &:hover {
+                            background-color: rgb(173, 24, 24);
+                        }
+                    }
+                    &.confirm {
+                        background-color: rgb(32, 107, 245);
+                        &:hover {
+                            background-color: rgb(27, 88, 202);
+                        }
+                    }
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+            
+    }
+}

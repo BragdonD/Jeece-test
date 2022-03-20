@@ -16,6 +16,7 @@
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  z-index: 9000;
   background-color: rgba(255, 255, 255, 0.4);
 }
 

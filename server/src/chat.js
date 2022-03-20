@@ -34,15 +34,15 @@ const chatSchema = new Schema(
                     type: String,
                     default: "",
                 },
-                pseudo: {
-                    type: String,
-                    default: "",
-                },
                 text: {
                     type: String,
                     default: "",
+                },
+                date: {
+                    type: Date,
+                    default: new Date()
                 }
-            })
+            }),
         }
     },
     {
@@ -50,7 +50,7 @@ const chatSchema = new Schema(
     },
 );
 
-const chat = Model( "Saloon", chatSchema );
+const chat = Model( "Chat", chatSchema );
 
 const createMemberByPseudo = async (pseudo, role) => {
     const temp = (await member.getMemberByPseudo(pseudo));
@@ -157,6 +157,73 @@ const addMember = async ( idChat, pseudo ) => {
     return undefined;
 }
 
+const UpgradeToAdmin = async ( idChat, idMember ) => {
+    return await chat.findOneAndUpdate(
+        {
+            _id: idChat,
+            "members._id": idMember
+        },
+        {
+            $set: {
+                "members.$.role": "admin"
+            }
+        },
+        {new: true}
+    ).exec();
+}
+
+const UpdateMemberPseudo = async ( idChat, idMember, pseudo ) => {
+    return await chat.findOneAndUpdate(
+        {
+            _id: idChat,
+            "members._id": idMember
+        },
+        {
+            $set: {
+                "members.$.pseudo": pseudo
+            }
+        },
+        {new: true}
+    ).exec();
+}
+
+const CreateMessage = (idCreator, msg) => {
+    return {
+        _id_creator: idCreator,
+        text: msg
+    }
+}
+
+const AddMessage = async (idChat, idMember, msg) => {
+    return await chat.findOneAndUpdate(
+        {
+            _id: idChat,
+        },
+        {
+            $push: {
+                "messages": CreateMessage(idMember, msg)
+            }
+        },
+        {new: true}
+    ).exec();
+}
+
+const DeleteMessage = async (idChat, idMessage) => {
+    return await chat.findOneAndUpdate(
+        {
+            _id: idChat,
+        },
+        {
+            $pull: {
+                messages: {
+                    _id: idMessage,
+                }
+            }
+        },
+        {new: true}
+    ).exec();
+}
+
 export default {
     createChat,
     getChats,
@@ -164,5 +231,9 @@ export default {
     createMemberByID,
     updateChatName,
     removeMember,
-    addMember
+    addMember,
+    UpgradeToAdmin,
+    UpdateMemberPseudo,
+    AddMessage,
+    DeleteMessage
 };

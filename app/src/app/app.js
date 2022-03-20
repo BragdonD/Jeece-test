@@ -4,7 +4,8 @@ import { UserArea } from './component/user-area.jsx';
 import { UserMenu } from "./component/user-menu.jsx";
 import { ChatBar } from './component/chat-bar/chat-bar.jsx';
 import { Preference } from './component/preferences/preferences';
-
+import { NewMeetings } from './component/new-meetings/new-meetings.jsx';
+import { Meetings } from './component/meetings/meetings.jsx';
 import "./app.css";
 import { NewConv } from './component/new-conv/new-conv.jsx';
 import { ChatBlock } from './component/chat-block/chat-block.jsx';
@@ -26,8 +27,11 @@ function App() {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showPreference, setShowPreference] = useState(false);
   const [showNewMessage, setShowNewMessage] = useState(false);
+  const [showNewMeeting, setShowNewMeeting] = useState(false);
+  const [showMeeting, setShowMeeting] = useState(false);
   const [convSelected, setConvSelected] = useState(0);
   const [render, setRender] = useState(false);
+  const [meetings, setMeetings] = useState([]);
   const [Ws, setWs] = useState(new WebSocketClient('ws://localhost:3001/'));
 
   Ws.onerror = function() {
@@ -56,7 +60,10 @@ function App() {
         //console.log("set user Chats");
         setChats(data.userChats.reverse());
       }
-      else if(data["newChat"] !== undefined) {
+      if(data["userMeetings"] !== undefined) {
+        setMeetings(data.userMeetings.reverse());
+      }
+      if(data["newChat"] !== undefined) {
         let temp = chats;
         temp.push(data.newChat);
         setChats(temp);
@@ -78,6 +85,16 @@ function App() {
           temp.forEach(element => {
             if(element._id === data.updateChat._id) {
               element.members = data.updateChat.members;
+            }
+          });
+          setChats(temp);
+          setRender(!render);
+        }
+        else if(data.updateChat.messages) {
+          let temp = chats;
+          temp.forEach(element => {
+            if(element._id === data.updateChat._id) {
+              element.messages = data.updateChat.messages;
             }
           });
           setChats(temp);
@@ -111,6 +128,11 @@ function App() {
       setShowUserMenu(false)
   }, [showNewMessage])
 
+  useEffect(() => {
+    if(showMeeting === true)
+      setShowUserMenu(false)
+  }, [showMeeting])
+
   return (
     <div className="App">
       <div className="left-side">
@@ -126,6 +148,13 @@ function App() {
           selected={convSelected} 
           setSelected={setConvSelected}
         ></ChatBar>
+        <Meetings
+          meetings={meetings}
+          display={showMeeting}
+          setDisplay={setShowMeeting}
+          id={memberData._id}
+          ws={Ws}
+        ></Meetings>
       </div>
       <Preference 
         member_data={memberData} 
@@ -137,9 +166,16 @@ function App() {
         setDisplay={setShowNewMessage} 
         ws={Ws}
       ></NewConv>
+      <NewMeetings
+        display={showNewMeeting} 
+        setDisplay={setShowNewMeeting} 
+        ws={Ws}
+      ></NewMeetings>
       <UserMenu 
         visibilty={showUserMenu} 
         setShowPreference={setShowPreference}
+        setShowNewMeeting={setShowNewMeeting}
+        setShowMeeting={setShowMeeting}
       ></UserMenu>
       <ChatBlock 
         conversation={chats !== undefined ? chats[convSelected] : undefined} 
